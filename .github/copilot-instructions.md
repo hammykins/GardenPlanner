@@ -1,3 +1,33 @@
+# Copilot Instructions
+
+## PowerShell Environment
+You are in a PowerShell environment. When providing terminal commands:
+- Do NOT use `&&` to chain commands (not supported in PowerShell)
+- Use semicolon (`;`) to separate commands on a single line
+- Example: `cd path; command1; command2`
+
+## VS Code Terminal Issues
+VS Code has known issues with terminal automation in this workspace:
+- Opening new terminals instead of using existing ones
+- Directory context not persisting between commands
+- Multiple terminal windows appearing unexpectedly
+
+**Important Terminal Management Rules**:
+1. **Before creating new terminals**: Always check existing terminals first using context
+2. **Reuse existing terminals**: Use `get_terminal_output` to check terminal status before creating new ones
+3. **Manual restarts preferred**: When servers crash, guide user to manually restart using Ctrl+C then rerun commands
+4. **Avoid parallel terminal creation**: Never create multiple terminals simultaneously for the same service
+5. **Use `isBackground=false` for quick commands**: Only use `isBackground=true` for long-running servers
+
+**Solution**: Use manual server startup commands:
+```powershell
+# Terminal 1 - Backend (from project root)
+cd c:\Users\User\Documents\personal_repos\garden_yard_planner\backend; python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8001
+
+# Terminal 2 - Frontend (from project root)  
+cd c:\Users\User\Documents\personal_repos\garden_yard_planner\frontend-vite; npm run dev
+```
+
 # Garden Yard Planner - AI Assistant Instructions
 
 ## Project Overview
@@ -1086,3 +1116,94 @@ data/                  # Persistent data storage
 2. Database changes:
    - Update models in `backend/app/models/`
    - Apply changes through SQLAlchemy
+
+## Data Sources and External APIs
+
+### Weather Data
+- **OpenWeatherMap API**: Primary source for weather forecasts and historical data
+  - Endpoint: `api.openweathermap.org/data/2.5/forecast`
+  - Features: 5-day forecast, historical data, precipitation probability
+  - Example integration in `weather_service.py`
+
+### Plant Database Sources
+1. **USDA Plants Database**
+   - API: https://plants.sc.egov.usda.gov/api/
+   - Comprehensive plant characteristics
+   - Growing requirements
+   - Native ranges
+
+2. **Trefle.io**
+   - Modern REST API for plants
+   - Over 1M plants in database
+   - Growth, edibility, and distribution data
+   - Example endpoint: `https://trefle.io/api/v1/plants`
+
+### Plant Images
+1. **Free Sources**:
+   - Wikimedia Commons API
+   - USDA PLANTS Database images
+   - Unsplash API (botanical photography)
+   - Example integration in `plant_image_service.py`
+
+2. **Creative Commons Sources**:
+   - iNaturalist API (community plant photos)
+   - Flickr Creative Commons API
+   - PlantNet API (includes image recognition)
+
+### Growing Zone Data
+- **USDA Plant Hardiness Zone API**
+  - ZIP code to zone mapping
+  - Temperature ranges
+  - Growing season length
+
+### Example Data Integration
+```python
+# backend/app/services/data_integration.py
+from typing import Dict, List
+import aiohttp
+import asyncio
+
+async def fetch_plant_data(scientific_name: str) -> Dict:
+    """Fetch plant data from multiple sources and merge"""
+    async with aiohttp.ClientSession() as session:
+        # Fetch from USDA
+        usda_data = await fetch_usda_data(session, scientific_name)
+        
+        # Fetch from Trefle
+        trefle_data = await fetch_trefle_data(session, scientific_name)
+        
+        # Merge data preferring USDA for scientific info
+        # and Trefle for growing conditions
+        return merge_plant_data(usda_data, trefle_data)
+
+async def fetch_plant_images(plant_name: str, limit: int = 5) -> List[str]:
+    """Fetch plant images from multiple free sources"""
+    async with aiohttp.ClientSession() as session:
+        tasks = [
+            fetch_wikimedia_images(session, plant_name),
+            fetch_unsplash_images(session, plant_name),
+            fetch_inaturalist_images(session, plant_name)
+        ]
+        
+        results = await asyncio.gather(*tasks)
+        return filter_and_deduplicate_images(results, limit)
+```
+
+## Environment Variables
+```env
+# .env example
+# Weather API
+OPENWEATHER_API_KEY=your_key_here
+WEATHER_UPDATE_INTERVAL=3600
+
+# Plant Data APIs
+TREFLE_API_KEY=your_key_here
+USDA_API_KEY=your_key_here
+
+# Image APIs
+UNSPLASH_ACCESS_KEY=your_key_here
+FLICKR_API_KEY=your_key_here
+
+# Database
+DATABASE_URL=postgresql://postgres:postgres@db:5432/garden_planner
+```
