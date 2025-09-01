@@ -1,0 +1,265 @@
+.grid-controls {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  min-width: 200px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  border: 2px solid #e0e0e0; /* Make it more visible */
+}
+
+.grid-controls-header {
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.toggle-grid-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.toggle-grid-btn:hover {
+  background: #45a049;
+}
+
+.toggle-grid-btn.hidden {
+  background: #757575;
+}
+
+.grid-icon.visible {
+  color: #fff;
+}
+
+.grid-icon.hidden {
+  color: #ccc;
+}
+
+.expand-controls-btn {
+  padding: 8px 12px;
+  background: #2196F3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.expand-controls-btn:hover {
+  background: #1976D2;
+}
+
+.grid-controls-panel {
+  padding: 16px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.control-section {
+  margin-bottom: 20px;
+}
+
+.control-section h4 {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  color: #333;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 4px;
+}
+
+.dimension-controls {
+  display: flex;
+  gap: 16px;
+}
+
+.dimension-group {
+  flex: 1;
+}
+
+.dimension-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 4px;
+  color: #555;
+}
+
+.number-input-group {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.number-input-group button {
+  background: #f5f5f5;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-color 0.2s;
+  min-width: 32px;
+}
+
+.number-input-group button:hover:not(:disabled) {
+  background: #e0e0e0;
+}
+
+.number-input-group button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.number-input-group input {
+  border: none;
+  padding: 8px;
+  text-align: center;
+  font-size: 14px;
+  width: 60px;
+  outline: none;
+}
+
+.cell-size-controls label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 4px;
+  color: #555;
+}
+
+.cell-size-controls select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  background: white;
+}
+
+.preset-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.preset-buttons button {
+  padding: 12px 8px;
+  background: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.preset-buttons button:hover {
+  background: #e9ecef;
+  border-color: #adb5bd;
+}
+
+.preset-buttons button small {
+  display: block;
+  color: #6c757d;
+  font-size: 10px;
+  margin-top: 2px;
+}
+
+.grid-info {
+  background: #f8f9fa;
+  padding: 12px;
+  border-radius: 4px;
+  border: 1px solid #e9ecef;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+  font-size: 13px;
+}
+
+.info-item:last-child {
+  margin-bottom: 0;
+}
+
+.control-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+  border-top: 1px solid #eee;
+  padding-top: 16px;
+}
+
+.apply-btn {
+  flex: 1;
+  padding: 10px;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.apply-btn:hover:not(:disabled) {
+  background: #45a049;
+}
+
+.apply-btn:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+}
+
+.reset-btn {
+  padding: 10px 16px;
+  background: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.reset-btn:hover {
+  background: #5a6268;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .grid-controls {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+  }
+  
+  .dimension-controls {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .preset-buttons {
+    grid-template-columns: 1fr;
+  }
+}

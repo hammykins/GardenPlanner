@@ -44,5 +44,7 @@ export interface GridSystem {
   dimensions: {
     width_feet: number;
     height_feet: number;
+    rows: number;
+    cols: number;
   };
 }

@@ -11,6 +11,7 @@ import { PlantSelector } from './PlantSelector';
 import { Legend } from './Legend';
 import { MapControls } from './MapControls';
 import { AddressSearch } from './AddressSearch';
+import { GridControls } from './GridControls';
 import { useGardenStore } from '../../stores/gardenStore';
 import type { PlantType } from '../../mocks/plantTypes';
 
@@ -63,7 +64,37 @@ const GardenPlanner: React.FC<GardenPlannerProps> = ({ gardenId }) => {
   const [plantedCells, setPlantedCells] = useState<PlantedCell[]>([]);
   const [isSatellite, setIsSatellite] = useState(false);
   const [currentZoom, setCurrentZoom] = useState(19);
+  const [gridVisible, setGridVisible] = useState(true);
   const mapRef = useRef<LeafletMap | null>(null);
+
+  // Grid control handlers
+  const handleGridResize = async (rows: number, cols: number) => {
+    try {
+      const response = await fetch(`/api/gardens/${gardenId}/grid/resize`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ rows, cols }),
+      });
+      
+      if (response.ok) {
+        // Refresh grid data
+        window.location.reload(); // Simple reload for now
+      }
+    } catch (error) {
+      console.error('Failed to resize grid:', error);
+    }
+  };
+
+  const handleCellSizeChange = (sizeFeet: number) => {
+    // This would update the cell size in the backend
+    console.log('Cell size changed to:', sizeFeet);
+  };
+
+  const handleToggleGrid = () => {
+    setGridVisible(!gridVisible);
+  };
 
   if (loading) {
     return <div>Loading garden data...</div>;
@@ -124,6 +155,15 @@ const GardenPlanner: React.FC<GardenPlannerProps> = ({ gardenId }) => {
           }} 
         />
         <div className="map-and-controls">
+          <GridControls 
+            currentRows={gridSystem?.dimensions?.rows || 10}
+            currentCols={gridSystem?.dimensions?.cols || 10}
+            cellSizeFeet={gridSystem?.cell_size_feet || 2}
+            onGridResize={handleGridResize}
+            onCellSizeChange={handleCellSizeChange}
+            onToggleGrid={handleToggleGrid}
+            gridVisible={gridVisible}
+          />
           <div className="map-wrapper">
           <MapContainer
             ref={mapRef}
@@ -147,7 +187,7 @@ const GardenPlanner: React.FC<GardenPlannerProps> = ({ gardenId }) => {
               />
             )}
             
-            {gridSystem.grid_cells.map((cell, index) => {
+            {gridVisible && gridSystem.grid_cells.map((cell, index) => {
               const plantedCell = plantedCells.find(pc => pc.cellId === index);
               return (
                 <Polygon
