@@ -1,0 +1,96 @@
+.garden-planner {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.garden-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.map-and-controls {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 20px;
+  align-items: start;
+}
+
+.map-wrapper {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.map-container {
+  height: 600px;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid #ccc;
+}
+
+.garden-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.cell-info {
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.cell-info h3 {
+  margin-top: 0;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+@media (max-width: 1024px) {
+  .garden-layout {
+    grid-template-columns: 1fr;
+  }
+  
+  .garden-controls {
+    flex-direction: row;
+    overflow-x: auto;
+    padding-bottom: 10px;
+  }
+  
+  .cell-info, .garden-legend {
+    min-width: 300px;
+  }
+}
+
+.garden-reset {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.reset-button {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transition: background-color 0.2s;
+}
+
+.reset-button:hover {
+  background-color: #c82333;
+}
+
+.reset-button:active {
+  background-color: #bd2130;
+}

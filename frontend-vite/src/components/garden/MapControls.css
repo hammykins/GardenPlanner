@@ -1,0 +1,48 @@
+.map-controls {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: white;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.map-control-btn {
+  background: white;
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.map-control-btn:hover {
+  background: #f5f5f5;
+}
+
+.map-control-btn.active {
+  background: #e3f2fd;
+  border-color: #2196f3;
+  color: #1976d2;
+}
+
+.zoom-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.zoom-controls span {
+  font-size: 12px;
+  color: #666;
+}
+
+.zoom-controls input[type="range"] {
+  width: 100%;
+}

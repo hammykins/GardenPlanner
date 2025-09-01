@@ -1,0 +1,30 @@
+{
+    "vegetables": [
+        {"common_name": "Tomato", "scientific_name": "Solanum lycopersicum", "categories": ["vegetable", "fruit"]},
+        {"common_name": "Bell Pepper", "scientific_name": "Capsicum annuum", "categories": ["vegetable"]},
+        {"common_name": "Cucumber", "scientific_name": "Cucumis sativus", "categories": ["vegetable"]},
+        {"common_name": "Lettuce", "scientific_name": "Lactuca sativa", "categories": ["vegetable", "leafy_green"]},
+        {"common_name": "Carrot", "scientific_name": "Daucus carota", "categories": ["vegetable", "root"]},
+        {"common_name": "Zucchini", "scientific_name": "Cucurbita pepo", "categories": ["vegetable", "squash"]},
+        {"common_name": "Bush Bean", "scientific_name": "Phaseolus vulgaris", "categories": ["vegetable", "legume"]},
+        {"common_name": "Cherry Tomato", "scientific_name": "Solanum lycopersicum var. cerasiforme", "categories": ["vegetable", "fruit"]}
+    ],
+    "herbs": [
+        {"common_name": "Basil", "scientific_name": "Ocimum basilicum", "categories": ["herb", "annual"]},
+        {"common_name": "Oregano", "scientific_name": "Origanum vulgare", "categories": ["herb", "perennial"]},
+        {"common_name": "Thyme", "scientific_name": "Thymus vulgaris", "categories": ["herb", "perennial"]},
+        {"common_name": "Rosemary", "scientific_name": "Rosmarinus officinalis", "categories": ["herb", "perennial"]},
+        {"common_name": "Mint", "scientific_name": "Mentha spicata", "categories": ["herb", "perennial"]}
+    ],
+    "fruits": [
+        {"common_name": "Strawberry", "scientific_name": "Fragaria × ananassa", "categories": ["fruit", "perennial"]},
+        {"common_name": "Blueberry", "scientific_name": "Vaccinium corymbosum", "categories": ["fruit", "perennial"]},
+        {"common_name": "Raspberry", "scientific_name": "Rubus idaeus", "categories": ["fruit", "perennial"]}
+    ],
+    "flowers": [
+        {"common_name": "Marigold", "scientific_name": "Tagetes erecta", "categories": ["flower", "annual", "companion"]},
+        {"common_name": "Zinnia", "scientific_name": "Zinnia elegans", "categories": ["flower", "annual"]},
+        {"common_name": "Lavender", "scientific_name": "Lavandula angustifolia", "categories": ["flower", "herb", "perennial"]},
+        {"common_name": "Sunflower", "scientific_name": "Helianthus annuus", "categories": ["flower", "annual"]}
+    ]
+}

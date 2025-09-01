@@ -1,0 +1,92 @@
+.plant-selector {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 15px;
+  width: 300px;
+}
+
+.plant-search {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.search-input {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.plant-list {
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #eee;
+  border-radius: 4px;
+}
+
+.plant-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+}
+
+.plant-item:last-child {
+  border-bottom: none;
+}
+
+.plant-item:hover {
+  background: #f5f5f5;
+}
+
+.plant-item.selected {
+  background: #e3f2fd;
+}
+
+.plant-name {
+  font-weight: 500;
+}
+
+.plant-category {
+  color: #666;
+  font-size: 0.9em;
+}
+
+.plant-options {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.color-picker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.color-picker label {
+  font-size: 14px;
+  color: #666;
+}
+
+.add-plant-btn {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  margin-top: 10px;
+}
+
+.add-plant-btn:hover {
+  background: #45a049;
+}
