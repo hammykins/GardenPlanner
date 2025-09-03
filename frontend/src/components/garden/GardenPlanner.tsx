@@ -1,10 +1,12 @@
 import React, { useState, useRef } from 'react';
-import { MapContainer, TileLayer, Polygon, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, useMap } from 'react-leaflet';
 import type { Map as LeafletMap } from 'leaflet';
 import type { LatLngTuple } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-draw/dist/leaflet.draw.css';
 import { BoundaryDrawing } from './BoundaryDrawing';
+import { InteractiveGrid } from './InteractiveGrid';
+import { GridControls } from './GridControls';
 import './GardenPlanner.css';
 import { useGardenData } from '../../hooks/useGardenData';
 import { PlantSelector } from './PlantSelector';
@@ -58,7 +60,8 @@ const MapController: React.FC<{
 };
 
 const GardenPlanner: React.FC<GardenPlannerProps> = ({ gardenId }) => {
-  const { garden, gridSystem, loading, error } = useGardenData(gardenId);
+  const { garden, gridSystem, loading, error, refresh } = useGardenData(gardenId);
+  const { isGridVisible, gridRows, gridCols } = useGardenStore();
   const [selectedCell, setSelectedCell] = useState<number | null>(null);
   const [plantedCells, setPlantedCells] = useState<PlantedCell[]>([]);
   const [isSatellite, setIsSatellite] = useState(false);
@@ -147,24 +150,12 @@ const GardenPlanner: React.FC<GardenPlannerProps> = ({ gardenId }) => {
               />
             )}
             
-            {gridSystem.grid_cells.map((cell, index) => {
-              const plantedCell = plantedCells.find(pc => pc.cellId === index);
-              return (
-                <Polygon
-                  key={index}
-                  positions={cell.geometry.coordinates[0].map(coord => [coord[1], coord[0]])}
-                  pathOptions={{
-                    color: selectedCell === index ? '#ff0000' : '#3388ff',
-                    weight: 1,
-                    fillOpacity: plantedCell ? 0.4 : 0.2,
-                    fillColor: plantedCell ? plantedCell.color : '#3388ff'
-                  }}
-                  eventHandlers={{
-                    click: () => handleCellClick(index)
-                  }}
-                />
-              );
-            })}
+            {/* Interactive Grid Component */}
+            <InteractiveGrid 
+              isGridVisible={isGridVisible}
+              rows={gridRows}
+              cols={gridCols}
+            />
             
             <MapController 
               onZoomChange={setCurrentZoom}
@@ -176,6 +167,8 @@ const GardenPlanner: React.FC<GardenPlannerProps> = ({ gardenId }) => {
             isSatellite={isSatellite}
             onToggleSatellite={() => setIsSatellite(prev => !prev)}
           />
+          
+          <GridControls />
           <div className="garden-reset">
             <button
               className="reset-button"
@@ -184,6 +177,7 @@ const GardenPlanner: React.FC<GardenPlannerProps> = ({ gardenId }) => {
                   useGardenStore.getState().clearAllData();
                   setPlantedCells([]);
                   setSelectedCell(null);
+                  refresh(); // Refresh API data to get clean state
                 }
               }}
             >

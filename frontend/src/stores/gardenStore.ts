@@ -14,6 +14,10 @@ interface GardenState {
   plantedCells: PlantedCell[];
   history: PlantedCell[][];
   currentHistoryIndex: number;
+  // Grid state
+  isGridVisible: boolean;
+  gridRows: number;
+  gridCols: number;
   // Actions
   setAddress: (address: string, lat: number, lng: number) => void;
   setBoundary: (boundary: number[][]) => void;
@@ -23,6 +27,13 @@ interface GardenState {
   removePlant: (cellId: number) => void;
   undo: () => void;
   redo: () => void;
+  // Grid actions
+  setGridVisible: (visible: boolean) => void;
+  setGridDimensions: (rows: number, cols: number) => void;
+  insertRow: () => void;
+  deleteRow: () => void;
+  insertColumn: () => void;
+  deleteColumn: () => void;
 }
 
 const MAX_HISTORY = 50;
@@ -35,6 +46,9 @@ export const useGardenStore = create<GardenState>((set, get) => {
     center: null,
     boundary: null,
     plantedCells: [],
+    isGridVisible: false,
+    gridRows: 6,
+    gridCols: 6,
   };
 
   return {
@@ -70,17 +84,26 @@ export const useGardenStore = create<GardenState>((set, get) => {
     },
 
     clearAllData: () => {
+      const currentState = get();
       set({
-        address: null,
-        center: null,
+        // Preserve address and center location
+        address: currentState.address,
+        center: currentState.center,
+        // Clear garden-specific data
         boundary: null,
         plantedCells: [],
         history: [[]],
         currentHistoryIndex: 0
       });
       
-      // Clear localStorage
-      localStorage.removeItem('gardenState');
+      // Update localStorage with preserved location data
+      const preservedState = {
+        address: currentState.address,
+        center: currentState.center,
+        boundary: null,
+        plantedCells: [],
+      };
+      localStorage.setItem('gardenState', JSON.stringify(preservedState));
     },
 
     addPlant: (cellId: number, plant: PlantType, color: string) => {
@@ -159,6 +182,39 @@ export const useGardenStore = create<GardenState>((set, get) => {
           currentHistoryIndex: state.currentHistoryIndex + 1,
           plantedCells: state.history[state.currentHistoryIndex + 1],
         });
+      }
+    },
+
+    // Grid actions
+    setGridVisible: (visible: boolean) => {
+      set({ isGridVisible: visible });
+    },
+
+    setGridDimensions: (rows: number, cols: number) => {
+      set({ gridRows: rows, gridCols: cols });
+    },
+
+    insertRow: () => {
+      const state = get();
+      set({ gridRows: state.gridRows + 1 });
+    },
+
+    deleteRow: () => {
+      const state = get();
+      if (state.gridRows > 1) {
+        set({ gridRows: state.gridRows - 1 });
+      }
+    },
+
+    insertColumn: () => {
+      const state = get();
+      set({ gridCols: state.gridCols + 1 });
+    },
+
+    deleteColumn: () => {
+      const state = get();
+      if (state.gridCols > 1) {
+        set({ gridCols: state.gridCols - 1 });
       }
     }
   }

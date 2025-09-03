@@ -1,7 +1,6 @@
 from datetime import datetime, date
-from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime, Date, JSON
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime, Date, JSON, Text
 from sqlalchemy.orm import relationship
-from geoalchemy2 import Geometry
 from app.database import Base
 
 class Plant(Base):
@@ -11,7 +10,7 @@ class Plant(Base):
     garden_id = Column(Integer, ForeignKey('gardens.id'))
     zone_id = Column(Integer, ForeignKey('zones.id'))
     species_id = Column(Integer, ForeignKey('plant_species.id'))
-    location = Column(Geometry('POINT'))
+    location = Column(Text)  # GeoJSON point for location data
     planted_date = Column(Date)
     current_height = Column(Float)
     current_spread = Column(Float)

@@ -1,0 +1,119 @@
+.grid-controls {
+  position: absolute;
+  top: 120px;
+  right: 10px;
+  z-index: 1000;
+  background: white;
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  border: 1px solid #e1e1e1;
+  min-width: 200px;
+}
+
+.grid-toggle {
+  margin-bottom: 10px;
+}
+
+.toggle-button {
+  width: 100%;
+  padding: 10px 16px;
+  border: 2px solid #3388ff;
+  background: white;
+  color: #3388ff;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  font-size: 14px;
+}
+
+.toggle-button:hover {
+  background: #f0f8ff;
+  transform: translateY(-1px);
+}
+
+.toggle-button.active {
+  background: #3388ff;
+  color: white;
+}
+
+.grid-actions {
+  border-top: 1px solid #e1e1e1;
+  padding-top: 10px;
+}
+
+.grid-info {
+  text-align: center;
+  margin-bottom: 12px;
+  font-weight: 600;
+  color: #555;
+}
+
+.grid-controls-row {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.control-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.control-group label {
+  font-weight: 600;
+  color: #333;
+  min-width: 50px;
+  font-size: 13px;
+}
+
+.control-btn {
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  min-width: 60px;
+}
+
+.control-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.control-btn.insert {
+  border-color: #4CAF50;
+  color: #4CAF50;
+}
+
+.control-btn.insert:hover:not(:disabled) {
+  background: #4CAF50;
+  color: white;
+}
+
+.control-btn.delete {
+  border-color: #f44336;
+  color: #f44336;
+}
+
+.control-btn.delete:hover:not(:disabled) {
+  background: #f44336;
+  color: white;
+}
+
+.control-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #f5f5f5;
+  color: #999;
+}
+
+.control-btn:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}

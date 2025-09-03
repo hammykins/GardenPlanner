@@ -1,18 +1,19 @@
-import React from 'react';
-import { GardenPlanner } from './components/GardenPlanner';
-import './App.css';
+import './App.css'
+import { Header } from './components/layout/Header'
+import GardenPlanner from './components/garden/GardenPlanner'
 
 function App() {
+  // For demonstration purposes, using a hardcoded garden ID
+  const demoGardenId = 1;
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Garden Yard Planner</h1>
-      </header>
-      <main>
-        <GardenPlanner />
+    <div className="app">
+      <Header />
+      <main className="app-main">
+        <GardenPlanner gardenId={demoGardenId} />
       </main>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
