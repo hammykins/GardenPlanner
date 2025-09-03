@@ -15,17 +15,19 @@ interface EditEvent extends L.LeafletEvent {
 
 export const BoundaryDrawing = () => {
   const map = useMap();
-  const { setBoundary } = useGardenStore();
+  const { boundary, setBoundary } = useGardenStore();
   
   // Track drawing state for debugging
   const isDrawing = useRef(false);
+  const editableLayers = useRef<L.FeatureGroup | null>(null);
   
   console.log('🌟 BoundaryDrawing component mounted');
 
   useEffect(() => {
     // Initialize the FeatureGroup to store editable layers
-    const editableLayers = new L.FeatureGroup();
-    map.addLayer(editableLayers);
+    const editableLayersInstance = new L.FeatureGroup();
+    editableLayers.current = editableLayersInstance;
+    map.addLayer(editableLayersInstance);
 
     // Add a safety fallback for area measurement
     // Override the area display handler
@@ -60,7 +62,7 @@ export const BoundaryDrawing = () => {
         }
       },
       edit: {
-        featureGroup: editableLayers,
+        featureGroup: editableLayersInstance,
         remove: true,
         edit: {
           selectedPathOptions: {
@@ -92,7 +94,7 @@ export const BoundaryDrawing = () => {
     map.on('draw:drawvertex', (e: any) => {
       console.log('📍 Vertex added:', e);
       // If we have 3 or more points, enable manual completion
-      const layers = editableLayers.getLayers();
+      const layers = editableLayersInstance.getLayers();
       if (layers.length > 0) {
         const layer = layers[0] as L.Polygon;
         const points = layer.getLatLngs();
@@ -124,10 +126,10 @@ export const BoundaryDrawing = () => {
         console.log('🎨 Draw created event type:', event.layerType);
         
         // Clear previous layers
-        editableLayers.clearLayers();
+        editableLayersInstance.clearLayers();
         
         // Add new layer
-        editableLayers.addLayer(event.layer);
+        editableLayersInstance.addLayer(event.layer);
         
         // Get coordinates from layer
         if (event.layerType === 'polygon') {
@@ -246,7 +248,7 @@ export const BoundaryDrawing = () => {
 
     return () => {
       map.removeControl(drawControl);
-      map.removeLayer(editableLayers);
+      map.removeLayer(editableLayersInstance);
       map.off('draw:created');
       map.off('draw:edited');
       map.off('draw:deleted');
@@ -254,6 +256,14 @@ export const BoundaryDrawing = () => {
       map.off('draw:drawstop');
     };
   }, [map, setBoundary]);
+
+  // Effect to clear layers when boundary is reset in store
+  useEffect(() => {
+    if (!boundary && editableLayers.current) {
+      console.log('🗑️ Clearing boundary layers due to store reset');
+      editableLayers.current.clearLayers();
+    }
+  }, [boundary]);
 
   return null;
 };

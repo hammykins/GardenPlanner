@@ -48,54 +48,150 @@ cd c:\Users\User\Documents\personal_repos\garden_yard_planner\frontend-vite; npm
 
 # Garden Yard Planner - AI Assistant Instructions
 
-## Project Overview
-This is a web-based garden and yard planning application built with a FastAPI backend, React frontend, and PostgreSQL database, all containerized with Docker.
+## Current Project Status (Updated September 2025)
+This is a web-based garden and yard planning application currently in active development. The project has a working FastAPI backend, React frontend with interactive grid system, and uses SQLite for development (with PostgreSQL planned for production).
 
-### Architecture
-- **Backend** (`/backend/`): Python FastAPI servi# Process satellite imagery for garden planning
+### Current Architecture
+- **Backend** (`/backend/`): Python FastAPI with SQLAlchemy ORM, currently using SQLite database
+- **Frontend** (`/frontend/`): React + TypeScript with Vite, featuring Leaflet maps and interactive grid system
+- **Database**: SQLite for development, PostgreSQL + PostGIS planned for production spatial features
+- **State Management**: Zustand store with localStorage persistence
 
-## Database Schemas
+### Key Working Features
+1. **Interactive Grid System**: 
+   - Separate polygon boundary drawing for yard outline
+   - Independent grid overlay with insert/delete row/column controls
+   - Real-time grid dimension display and persistence
+   
+2. **Address Search & Mapping**: 
+   - Address search with automatic map centering
+   - Satellite/street view toggle
+   - High-resolution zoom (up to level 22)
+   
+3. **Smart State Management**: 
+   - Reset function that preserves location while clearing garden data
+   - Persistent storage across browser sessions
+   - Centralized Zustand store for all garden state
 
-### Garden and Zone Schema
+### Current Development Environment
+- **Path Configuration**: Both Node.js and Python paths configured in Windows PATH
+- **Python**: 3.12.x using `python.exe` command to bypass Microsoft Store alias
+- **Node.js**: v22.x with npm v10.x for frontend package management
+- **Development Servers**: Backend on port 8000, Frontend on port 5173
+
+## Current Database Schemas (Working Implementation)
+
+### Basic Models (Currently Implemented)
 ```python
-# backend/app/models/garden.py
-from geoalchemy2 import Geometry
-from sqlalchemy import Column, Integer, String, Float, ForeignKey
-from sqlalchemy.orm import relationship
-from app.database import Base
+# backend/app/models/ - Current working models
+# These are basic models, spatial features will be added later with PostGIS
 
 class Garden(Base):
     __tablename__ = "gardens"
-    
     id = Column(Integer, primary_key=True)
     name = Column(String)
-    user_id = Column(Integer, ForeignKey('users.id'))
-    boundary = Column(Geometry('POLYGON'))
-    elevation = Column(Float)  # Average elevation in meters
-    soil_type = Column(String)
-    climate_zone = Column(String)
+    boundary_data = Column(Text)  # JSON string of polygon coordinates
     
-    # Relationships
-    zones = relationship('Zone', back_populates='garden')
-    plants = relationship('Plant', back_populates='garden')
-
-class Zone(Base):
-    __tablename__ = "zones"
-    
+class Plant(Base):
+    __tablename__ = "plants"
     id = Column(Integer, primary_key=True)
-    garden_id = Column(Integer, ForeignKey('gardens.id'))
     name = Column(String)
-    boundary = Column(Geometry('POLYGON'))
-    sun_exposure = Column(Float)  # Average daily sun hours
-    soil_ph = Column(Float)
-    soil_moisture = Column(Float)
+    species = Column(String)
     
-    garden = relationship('Garden', back_populates='zones')
-    plants = relationship('Plant', back_populates='zone')
+# Additional models exist but are not fully implemented yet
+```
 
-### Plant Schema with Seasonal Data
+## Current API Endpoints (Working)
+
+### Garden Management
 ```python
-# backend/app/models/plant.py
+# backend/app/routers/ - Current working endpoints with /api prefix
+GET /api/gardens/{garden_id}
+POST /api/gardens/
+PUT /api/gardens/{garden_id}
+DELETE /api/gardens/{garden_id}
+
+GET /api/plants/
+POST /api/plants/
+
+# All endpoints return mock data currently for frontend development
+```
+
+## Current Frontend Components (Working Implementation)
+
+### Grid System Components
+```typescript
+// frontend/src/components/garden/InteractiveGrid.tsx
+interface InteractiveGridProps {
+  isGridVisible: boolean;
+  rows: number;
+  cols: number;
+}
+
+// Generates grid cells within boundary polygon
+// Uses dashed lines for visual clarity
+// Controlled by garden store state
+
+// frontend/src/components/garden/GridControls.tsx  
+// Provides intuitive UI controls:
+// - Toggle: "📐 Add Grid" / "🎯 Grid Active"
+// - "Insert Row/Column" and "Delete Row/Column" buttons
+// - Real-time grid dimensions display
+```
+
+### State Management (Current Implementation)
+```typescript
+// frontend/src/stores/gardenStore.ts - Zustand store
+interface GardenState {
+  // Location and boundary
+  address: string | null;
+  center: [number, number] | null; 
+  boundary: number[][] | null;
+  
+  // Grid system
+  isGridVisible: boolean;
+  gridRows: number;
+  gridCols: number;
+  
+  // Actions
+  setAddress: (address: string, lat: number, lng: number) => void;
+  setBoundary: (boundary: number[][]) => void;
+  clearAllData: () => void; // Preserves address/center
+  setGridVisible: (visible: boolean) => void;
+  insertRow: () => void;
+  deleteRow: () => void;
+  insertColumn: () => void;
+  deleteColumn: () => void;
+}
+```
+
+## Current Development Patterns
+
+### File Organization (Current Structure)
+```
+backend/
+  ├── app/
+  │   ├── main.py              # FastAPI app with /api/* endpoints
+  │   ├── database.py          # SQLite configuration
+  │   ├── models/              # SQLAlchemy models
+  │   └── routers/             # API endpoints
+frontend/
+  ├── src/
+  │   ├── components/garden/   # Garden-specific React components
+  │   ├── stores/             # Zustand state management
+  │   ├── hooks/              # Custom React hooks
+  │   └── api/                # API client functions
+```
+
+### Current Workflow (What Actually Works)
+1. **Backend Start**: `cd backend && .\venv\Scripts\Activate.ps1 && python.exe -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload`
+2. **Frontend Start**: `cd frontend && npm run dev`
+3. **Access**: Frontend at http://localhost:5173, Backend at http://localhost:8000
+4. **Features**: Address search, boundary drawing, grid system with controls
+
+## Advanced Features (Planned/Future Implementation)
+
+### Spatial Analysis (PostGIS Integration Planned)
 from sqlalchemy import Column, Integer, String, Float, JSON, ForeignKey
 from sqlalchemy.orm import relationship
 from app.database import Base

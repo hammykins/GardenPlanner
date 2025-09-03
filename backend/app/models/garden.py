@@ -1,8 +1,10 @@
 from datetime import datetime, date
-from geoalchemy2 import Geometry
-from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime, Date, Time, Boolean, JSON
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime, Date, Time, Boolean, JSON, Text
 from sqlalchemy.orm import relationship
 from app.database import Base
+
+# For SQLite development, we'll use TEXT for geometry data instead of PostGIS types
+# In production with PostgreSQL, these would be Geometry types
 
 class Garden(Base):
     __tablename__ = "gardens"
@@ -10,7 +12,7 @@ class Garden(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String)
     user_id = Column(Integer, ForeignKey('users.id'))
-    boundary = Column(Geometry('POLYGON'))
+    boundary = Column(Text)  # GeoJSON string for SQLite, Geometry('POLYGON') for PostgreSQL
     elevation = Column(Float)
     soil_type = Column(String)
     climate_zone = Column(String)

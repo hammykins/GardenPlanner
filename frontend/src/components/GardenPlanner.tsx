@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { MapContainer, TileLayer, ImageOverlay, Polygon } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import './GardenPlanner.css';
 
 interface GridCell {
   type: 'Feature';
