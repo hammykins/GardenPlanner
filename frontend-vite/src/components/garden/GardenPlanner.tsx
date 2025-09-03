@@ -1,10 +1,11 @@
 import React, { useState, useRef } from 'react';
-import { MapContainer, TileLayer, Polygon, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, useMap } from 'react-leaflet';
 import type { Map as LeafletMap } from 'leaflet';
 import type { LatLngTuple } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-draw/dist/leaflet.draw.css';
 import { BoundaryDrawing } from './BoundaryDrawing';
+import { InteractiveGrid } from './InteractiveGrid';
 import './GardenPlanner.css';
 import { useGardenData } from '../../hooks/useGardenData';
 import { PlantSelector } from './PlantSelector';
@@ -12,6 +13,7 @@ import { Legend } from './Legend';
 import { MapControls } from './MapControls';
 import { AddressSearch } from './AddressSearch';
 import { useGardenStore } from '../../stores/gardenStore';
+import { gardenService } from '../../services/garden.service';
 import type { PlantType } from '../../mocks/plantTypes';
 
 // Fix for the leaflet icon issue
@@ -63,6 +65,7 @@ const GardenPlanner: React.FC<GardenPlannerProps> = ({ gardenId }) => {
   const [plantedCells, setPlantedCells] = useState<PlantedCell[]>([]);
   const [isSatellite, setIsSatellite] = useState(false);
   const [currentZoom, setCurrentZoom] = useState(19);
+  const [gridVisible, setGridVisible] = useState(true);
   const mapRef = useRef<LeafletMap | null>(null);
 
   if (loading) {
@@ -79,6 +82,16 @@ const GardenPlanner: React.FC<GardenPlannerProps> = ({ gardenId }) => {
 
   const handleCellClick = (cellId: number) => {
     setSelectedCell(cellId);
+  };
+
+  const handleGridResize = async (rows: number, cols: number) => {
+    try {
+      await gardenService.resizeGardenGrid(gardenId, rows, cols);
+      // Refetch the grid data
+      window.location.reload(); // Simple refresh for now
+    } catch (error) {
+      console.error('Failed to resize grid:', error);
+    }
   };
 
   const handlePlantSelect = (plant: PlantType, color: string) => {
@@ -147,24 +160,16 @@ const GardenPlanner: React.FC<GardenPlannerProps> = ({ gardenId }) => {
               />
             )}
             
-            {gridSystem.grid_cells.map((cell, index) => {
-              const plantedCell = plantedCells.find(pc => pc.cellId === index);
-              return (
-                <Polygon
-                  key={index}
-                  positions={cell.geometry.coordinates[0].map(coord => [coord[1], coord[0]])}
-                  pathOptions={{
-                    color: selectedCell === index ? '#ff0000' : '#3388ff',
-                    weight: 1,
-                    fillOpacity: plantedCell ? 0.4 : 0.2,
-                    fillColor: plantedCell ? plantedCell.color : '#3388ff'
-                  }}
-                  eventHandlers={{
-                    click: () => handleCellClick(index)
-                  }}
-                />
-              );
-            })}
+            {gridVisible && gridSystem && (
+              <InteractiveGrid
+                gridSystem={gridSystem}
+                plantedCells={plantedCells}
+                selectedCell={selectedCell}
+                onCellClick={handleCellClick}
+                onGridResize={handleGridResize}
+                gridVisible={gridVisible}
+              />
+            )}
             
             <MapController 
               onZoomChange={setCurrentZoom}

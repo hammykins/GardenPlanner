@@ -19,14 +19,32 @@ VS Code has known issues with terminal automation in this workspace:
 4. **Avoid parallel terminal creation**: Never create multiple terminals simultaneously for the same service
 5. **Use `isBackground=false` for quick commands**: Only use `isBackground=true` for long-running servers
 
+## Port Management Strategy
+**Frontend Port Requirements**:
+- **ALWAYS use port 5173**: The default Vite development port
+- **If port 5173 is in use**: Close all terminals first to free up the port
+- **Terminal cleanup process**:
+  1. Use Ctrl+C in any running frontend terminals
+  2. Close all terminal windows if necessary
+  3. Start fresh with `npm run dev` to ensure port 5173 is used
+- **Why port 5173 matters**: 
+  - CORS configuration expects this port
+  - Consistent development environment
+  - Avoids port configuration mismatches
+
 **Solution**: Use manual server startup commands:
 ```powershell
 # Terminal 1 - Backend (from project root)
-cd c:\Users\User\Documents\personal_repos\garden_yard_planner\backend; python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8001
+cd c:\Users\User\Documents\personal_repos\garden_yard_planner\backend; python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
 # Terminal 2 - Frontend (from project root)  
 cd c:\Users\User\Documents\personal_repos\garden_yard_planner\frontend-vite; npm run dev
 ```
+
+**If Vite tries to use a different port (like 5174)**:
+1. Stop the Vite server (Ctrl+C)
+2. Close any other terminals that might be using port 5173
+3. Restart with `npm run dev` to claim port 5173
 
 # Garden Yard Planner - AI Assistant Instructions
 

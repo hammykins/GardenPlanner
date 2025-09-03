@@ -28,6 +28,18 @@ export const gardenService = {
     return response.json();
   },
 
+  async resizeGardenGrid(id: number, rows: number, cols: number): Promise<{ message: string; new_dimensions: { rows: number; cols: number } }> {
+    const response = await fetch(`${API_BASE}/gardens/${id}/grid/resize`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ rows, cols }),
+    });
+    if (!response.ok) throw new Error('Failed to resize garden grid');
+    return response.json();
+  },
+
   async getPlants(gardenId: number): Promise<Plant[]> {
     const response = await fetch(`${API_BASE}/gardens/${gardenId}/plants`);
     if (!response.ok) throw new Error('Failed to fetch plants');
