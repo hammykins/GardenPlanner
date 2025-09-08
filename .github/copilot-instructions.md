@@ -1,77 +1,119 @@
 # Copilot Instructions
 
+## Development Methodology
+
+### **Mapbox API Documentation Priority**
+When working with mapping functionality:
+1. **ALWAYS consult Mapbox API documentation first**: https://docs.mapbox.com/mapbox-gl-js/api/
+2. **Use official Mapbox examples**: https://docs.mapbox.com/mapbox-gl-js/example/
+3. **Follow Mapbox best practices**: Use `addInteraction()`, feature states, and official layer patterns
+4. **Prefer official patterns over custom implementations**: Use documented API methods
+5. **Check for Mapbox Draw specific documentation**: https://github.com/mapbox/mapbox-gl-draw/blob/main/docs/API.md
+
+### **External API Documentation Priority Order**
+1. **Mapbox GL JS**: Official documentation for all mapping features
+2. **React/TypeScript**: Official docs for component patterns
+3. **FastAPI**: Official docs for backend API patterns
+4. **PostgreSQL/PostGIS**: Official docs for spatial database features
+
 ## PowerShell Environment
 You are in a PowerShell environment. When providing terminal commands:
 - Do NOT use `&&` to chain commands (not supported in PowerShell)
 - Use semicolon (`;`) to separate commands on a single line
 - Example: `cd path; command1; command2`
 
-## VS Code Terminal Issues
+## VS Code Terminal Management
 VS Code has known issues with terminal automation in this workspace:
 - Opening new terminals instead of using existing ones
 - Directory context not persisting between commands
 - Multiple terminal windows appearing unexpectedly
 
-**Important Terminal Management Rules**:
-1. **Before creating new terminals**: Always check existing terminals first using context
-2. **Reuse existing terminals**: Use `get_terminal_output` to check terminal status before creating new ones
-3. **Manual restarts preferred**: When servers crash, guide user to manually restart using Ctrl+C then rerun commands
-4. **Avoid parallel terminal creation**: Never create multiple terminals simultaneously for the same service
-5. **Use `isBackground=false` for quick commands**: Only use `isBackground=true` for long-running servers
+**Critical Terminal Management Rules**:
+1. **ALWAYS close existing terminals before starting new ones**: Use Ctrl+C or close terminal tabs to stop running processes
+2. **Wait for ports to be freed**: Give processes time to release ports before restarting
+3. **Never start servers when same service is already running**: Check for existing processes first
+4. **Close terminals properly**: Use `taskkill /F /IM node.exe` if needed to free up Node.js processes
+5. **Restart servers when making configuration changes**: Hot reload doesn't always pick up API URL changes
+
+**Server Restart Protocol**:
+1. **Stop existing server**: Ctrl+C in terminal or close terminal tab
+2. **Verify port is free**: Wait 2-3 seconds for port release
+3. **Start fresh server**: Use new terminal with clean environment
+4. **Verify correct port**: Ensure frontend uses 5173, backend uses 8000
 
 ## Port Management Strategy
 **Frontend Port Requirements**:
 - **ALWAYS use port 5173**: The default Vite development port
-- **If port 5173 is in use**: Close all terminals first to free up the port
+- **If port 5173 is in use**: Close all terminals first to free up the port using proper terminal closure
 - **Terminal cleanup process**:
   1. Use Ctrl+C in any running frontend terminals
-  2. Close all terminal windows if necessary
-  3. Start fresh with `npm run dev` to ensure port 5173 is used
+  2. Close terminal tabs/windows completely
+  3. Use `taskkill /F /IM node.exe` if ports remain occupied
+  4. Start fresh with `npm run dev` to ensure port 5173 is used
 - **Why port 5173 matters**: 
   - CORS configuration expects this port
   - Consistent development environment
   - Avoids port configuration mismatches
+  - API calls are configured for this specific setup
+
+**Configuration Update Protocol**:
+When updating API URLs or configuration:
+1. **Stop all servers first**: Close terminals completely, don't just restart
+2. **Verify changes are saved**: Check file contents after editing
+3. **Clear any caches**: Full server restart ensures changes take effect
+4. **Start servers in correct order**: Backend first (port 8000), then frontend (port 5173)
 
 **Solution**: Use manual server startup commands:
 ```powershell
 # Terminal 1 - Backend (from project root)
-cd c:\Users\User\Documents\personal_repos\garden_yard_planner\backend; python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+cd backend; .\venv\Scripts\Activate.ps1; python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
 # Terminal 2 - Frontend (from project root)  
-cd c:\Users\User\Documents\personal_repos\garden_yard_planner\frontend-vite; npm run dev
+cd frontend; npm run dev
 ```
 
 **If Vite tries to use a different port (like 5174)**:
 1. Stop the Vite server (Ctrl+C)
-2. Close any other terminals that might be using port 5173
-3. Restart with `npm run dev` to claim port 5173
+2. Close the terminal tab completely
+3. Kill any remaining Node.js processes if needed
+4. Open fresh terminal and restart with `npm run dev` to claim port 5173
 
 # Garden Yard Planner - AI Assistant Instructions
 
 ## Current Project Status (Updated September 2025)
-This is a web-based garden and yard planning application currently in active development. The project has a working FastAPI backend, React frontend with interactive grid system, and uses SQLite for development (with PostgreSQL planned for production).
+This is a web-based garden and yard planning application with a working FastAPI backend, React frontend with professional mapping system, and PostgreSQL database for development.
 
 ### Current Architecture
-- **Backend** (`/backend/`): Python FastAPI with SQLAlchemy ORM, currently using SQLite database
-- **Frontend** (`/frontend/`): React + TypeScript with Vite, featuring Leaflet maps and interactive grid system
-- **Database**: SQLite for development, PostgreSQL + PostGIS planned for production spatial features
-- **State Management**: Zustand store with localStorage persistence
+- **Backend** (`/backend/`): Python FastAPI with SQLAlchemy ORM, PostgreSQL database with spatial features
+- **Frontend** (`/frontend/`): React + TypeScript with Vite, featuring Mapbox GL JS with professional drawing tools
+- **Database**: PostgreSQL with spatial capabilities for feature storage
+- **State Management**: React state with API persistence
+- **Mapping**: Mapbox GL JS with Mapbox Draw for professional polygon creation and editing
 
 ### Key Working Features
-1. **Interactive Grid System**: 
-   - Separate polygon boundary drawing for yard outline
-   - Independent grid overlay with insert/delete row/column controls
-   - Real-time grid dimension display and persistence
+1. **Professional Mapping System**: 
+   - Mapbox GL JS with custom USGS National Map imagery (free unlimited tiles)
+   - Mapbox Draw tools for professional polygon creation and editing
+   - Interactive feature management with hover effects and deletion
+   - Address search with geocoding and map centering
    
-2. **Address Search & Mapping**: 
-   - Address search with automatic map centering
-   - Satellite/street view toggle
-   - High-resolution zoom (up to level 22)
+2. **Feature Management**: 
+   - Multi-feature boundary drawing (yard, house, garden beds, etc.)
+   - Custom naming and color selection (8 presets + custom color picker)
+   - Persistent storage with full CRUD operations
+   - Interactive hover effects with delete functionality
+   - High-resolution zoom (up to level 22) with professional satellite+topographic imagery
+   
+3. **Cost-Optimized Design**: 
+   - USGS National Map for unlimited free imagery
+   - Mapbox usage limited to drawing tools only (~90% cost reduction)
+   - Built-in usage tracking with progressive alerts
+   - Hybrid approach maximizing functionality while minimizing costs
    
 3. **Smart State Management**: 
    - Reset function that preserves location while clearing garden data
    - Persistent storage across browser sessions
-   - Centralized Zustand store for all garden state
+   - Centralized React state with database persistence
 
 ### Current Development Environment
 - **Path Configuration**: Both Node.js and Python paths configured in Windows PATH
@@ -81,31 +123,31 @@ This is a web-based garden and yard planning application currently in active dev
 
 ## Current Database Schemas (Working Implementation)
 
-### Basic Models (Currently Implemented)
+### Feature Models (Currently Implemented)
 ```python
-# backend/app/models/ - Current working models
-# These are basic models, spatial features will be added later with PostGIS
+# backend/app/models/feature.py - Current working feature model
+class Feature(Base):
+    __tablename__ = "features"
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, nullable=True)  # Nullable for development
+    garden_id = Column(Integer, nullable=True)  # Nullable for development
+    name = Column(String)
+    boundary = Column(Text)  # GeoJSON string
+    color = Column(String)
+    created_at = Column(DateTime, default=datetime.utcnow)
 
-class Garden(Base):
-    __tablename__ = "gardens"
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
-    boundary_data = Column(Text)  # JSON string of polygon coordinates
-    
-class Plant(Base):
-    __tablename__ = "plants"
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
-    species = Column(String)
-    
-# Additional models exist but are not fully implemented yet
+# Additional models exist for future plant management and spatial features
 ```
 
 ## Current API Endpoints (Working)
 
-### Garden Management
+### Feature Management
 ```python
-# backend/app/routers/ - Current working endpoints with /api prefix
+# backend/app/routers/features.py - Current working endpoints with /api prefix
+GET /api/features/?garden_id={id}  # List features for a garden
+POST /api/features/               # Create new feature
+PUT /api/features/{feature_id}    # Update existing feature
+DELETE /api/features/{feature_id} # Delete feature
 GET /api/gardens/{garden_id}
 POST /api/gardens/
 PUT /api/gardens/{garden_id}
@@ -114,44 +156,58 @@ DELETE /api/gardens/{garden_id}
 GET /api/plants/
 POST /api/plants/
 
-# All endpoints return mock data currently for frontend development
+# All endpoints return working data with PostgreSQL backend
 ```
 
 ## Current Frontend Components (Working Implementation)
 
-### Grid System Components
+### Mapbox Components
 ```typescript
-// frontend/src/components/garden/InteractiveGrid.tsx
-interface InteractiveGridProps {
-  isGridVisible: boolean;
-  rows: number;
-  cols: number;
+// frontend/src/components/garden/MapboxGardenPlanner.tsx
+interface MapboxGardenPlannerProps {
+  gardenId: number;
+  onFeaturesChange: (features: Feature[]) => void;
 }
 
-// Generates grid cells within boundary polygon
-// Uses dashed lines for visual clarity
-// Controlled by garden store state
+// Main component with:
+// - Mapbox GL JS map with USGS imagery
+// - Mapbox Draw tools for polygon creation
+// - Interactive feature management with hover effects
+// - Professional popup design with delete functionality
 
-// frontend/src/components/garden/GridControls.tsx  
-// Provides intuitive UI controls:
-// - Toggle: "📐 Add Grid" / "🎯 Grid Active"
-// - "Insert Row/Column" and "Delete Row/Column" buttons
-// - Real-time grid dimensions display
+// frontend/src/components/garden/AddressSearch.tsx  
+// Provides address search with Mapbox geocoding:
+// - Autocomplete dropdown with search results
+// - Fallback to OpenStreetMap if no Mapbox token
+// - Map centering on address selection
+
+// frontend/src/components/garden/FeatureNameModal.tsx
+// Feature creation modal with:
+// - Name input for custom feature naming
+// - 8 preset colors + custom color picker
+// - Professional styling and validation
 ```
 
-### State Management (Current Implementation)
+### API Integration (Current Implementation)
 ```typescript
-// frontend/src/stores/gardenStore.ts - Zustand store
-interface GardenState {
-  // Location and boundary
-  address: string | null;
-  center: [number, number] | null; 
-  boundary: number[][] | null;
-  
-  // Grid system
-  isGridVisible: boolean;
-  gridRows: number;
-  gridCols: number;
+// frontend/src/api/features.api.ts - Feature management
+interface Feature {
+  id: number;
+  name: string;
+  boundary: string; // GeoJSON string
+  color: string;
+  garden_id: number;
+  user_id?: number;
+  created_at: string;
+}
+
+interface FeatureCreate {
+  name: string;
+  boundary: string;
+  color: string;
+  garden_id: number;
+  user_id?: number;
+}
   
   // Actions
   setAddress: (address: string, lat: number, lng: number) => void;
@@ -172,7 +228,7 @@ interface GardenState {
 backend/
   ├── app/
   │   ├── main.py              # FastAPI app with /api/* endpoints
-  │   ├── database.py          # SQLite configuration
+  │   ├── database.py          # PostgreSQL configuration
   │   ├── models/              # SQLAlchemy models
   │   └── routers/             # API endpoints
 frontend/

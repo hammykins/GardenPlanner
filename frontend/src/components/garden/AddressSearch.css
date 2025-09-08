@@ -1,26 +1,89 @@
 .address-search {
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.search-form {
+  position: relative;
+}
+
+.search-input-container {
   display: flex;
   gap: 8px;
-  margin-bottom: 16px;
 }
 
 .address-input {
   flex: 1;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  padding: 10px 12px;
+  border: 2px solid #e1e5e9;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.2s ease;
+}
+
+.address-input:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.address-input:disabled {
+  background-color: #f9fafb;
+  cursor: not-allowed;
 }
 
 .search-button {
-  padding: 8px 16px;
-  background-color: #4CAF50;
+  padding: 10px 16px;
+  background-color: #4f46e5;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.2s ease;
+  min-width: 50px;
+}
+
+.search-button:hover:not(:disabled) {
+  background-color: #4338ca;
 }
 
 .search-button:disabled {
-  background-color: #cccccc;
+  background-color: #d1d5db;
   cursor: not-allowed;
+}
+
+.search-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 50px; /* Leave space for button */
+  background: white;
+  border: 1px solid #e1e5e9;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.search-result {
+  padding: 12px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid #f3f4f6;
+  transition: background-color 0.15s ease;
+}
+
+.search-result:last-child {
+  border-bottom: none;
+}
+
+.search-result:hover {
+  background-color: #f8fafc;
+}
+
+.result-name {
+  font-size: 14px;
+  color: #374151;
+  line-height: 1.4;
 }

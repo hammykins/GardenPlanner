@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routers import gardens, plants
+from app.routers import features
 
 app = FastAPI(title="Garden Yard Planner API")
 
@@ -16,6 +17,7 @@ app.add_middleware(
 # Include routers
 app.include_router(gardens.router, prefix="/api", tags=["gardens"])
 app.include_router(plants.router, prefix="/api", tags=["plants"])
+app.include_router(features.router, prefix="/api", tags=["features"])
 
 @app.get("/")
 async def root():

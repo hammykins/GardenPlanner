@@ -2,9 +2,14 @@ from datetime import datetime
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from pydantic import BaseModel
 from app.database import get_db
 
 router = APIRouter()
+
+class GridResizeRequest(BaseModel):
+    rows: int
+    cols: int
 
 @router.get("/gardens/{garden_id}")
 async def get_garden(garden_id: int):
@@ -75,14 +80,14 @@ async def get_garden_grid(garden_id: int, size: int = 2):
     }
 
 @router.put("/gardens/{garden_id}/grid/resize")
-async def resize_garden_grid(garden_id: int, rows: int, cols: int):
+async def resize_garden_grid(garden_id: int, resize_data: GridResizeRequest):
     """Resize the garden grid"""
     # Mock implementation - in practice this would regenerate the grid
     return {
         "garden_id": garden_id,
-        "message": f"Grid resized to {rows}x{cols}",
+        "message": f"Grid resized to {resize_data.rows}x{resize_data.cols}",
         "new_dimensions": {
-            "rows": rows,
-            "cols": cols
+            "rows": resize_data.rows,
+            "cols": resize_data.cols
         }
     }

@@ -1,7 +1,7 @@
 import type { Garden, GridSystem } from '../types/garden';
 import type { GardenBoundary, Plant } from '../types/garden';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8001/api';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 export const gardenService = {
   async getGarden(id: number): Promise<Garden> {

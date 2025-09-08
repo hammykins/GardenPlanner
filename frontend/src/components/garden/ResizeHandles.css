@@ -1,0 +1,82 @@
+/* Enhanced resize handle styling */
+.resize-handle-wrapper {
+  position: relative !important;
+}
+
+.resize-handle-circle {
+  transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1) !important;
+  user-select: none !important;
+}
+
+.resize-handle-circle:hover {
+  background: transparent !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.resize-handle-circle:active {
+  background: transparent !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Override ALL Leaflet marker defaults for resize handles */
+.custom-resize-handle {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.custom-resize-handle .leaflet-marker-icon {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+}
+
+/* Hide any default marker content */
+.custom-resize-handle::before,
+.custom-resize-handle::after {
+  display: none !important;
+  content: none !important;
+}
+
+.custom-resize-handle .leaflet-marker-icon::before,
+.custom-resize-handle .leaflet-marker-icon::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* Hide any child elements that might contain default arrows */
+.custom-resize-handle > *:not(.resize-handle-wrapper) {
+  display: none !important;
+}
+
+.custom-resize-handle .leaflet-marker-icon > *:not(.resize-handle-wrapper) {
+  display: none !important;
+}
+
+/* Specific cursor styles for each corner */
+.resize-nw .resize-handle-circle {
+  cursor: nw-resize !important;
+}
+
+.resize-ne .resize-handle-circle {
+  cursor: ne-resize !important;
+}
+
+.resize-sw .resize-handle-circle {
+  cursor: sw-resize !important;
+}
+
+.resize-se .resize-handle-circle {
+  cursor: se-resize !important;
+}
+
+/* Disable text selection during drag */
+.leaflet-dragging {
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+}

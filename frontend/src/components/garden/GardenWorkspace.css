@@ -1,0 +1,215 @@
+.garden-workspace {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f8fafc;
+}
+
+.workspace-header {
+  background: white;
+  padding: 16px 24px;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.back-button {
+  background: #f3f4f6;
+  border: 1px solid #d1d5db;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.back-button:hover {
+  background: #e5e7eb;
+}
+
+.workspace-header h1 {
+  margin: 0;
+  font-size: 24px;
+  color: #1f2937;
+}
+
+.garden-info {
+  display: flex;
+  gap: 16px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.workspace-content {
+  flex: 1;
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+}
+
+.grid-controls {
+  width: 280px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  padding: 20px;
+  height: fit-content;
+}
+
+.grid-controls h3 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  color: #1f2937;
+}
+
+.control-group {
+  margin-bottom: 16px;
+}
+
+.control-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.control-group input[type="range"] {
+  width: 100%;
+  height: 4px;
+  background: #e5e7eb;
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+.cell-actions {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.cell-actions h4 {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  color: #1f2937;
+}
+
+.plant-button, .remove-button {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 8px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.plant-button {
+  background: #22c55e;
+  color: white;
+}
+
+.plant-button:hover {
+  background: #16a34a;
+}
+
+.remove-button {
+  background: #ef4444;
+  color: white;
+}
+
+.remove-button:hover {
+  background: #dc2626;
+}
+
+.garden-canvas-container {
+  flex: 1;
+  position: relative;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+}
+
+.map-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
+.map-placeholder {
+  height: 100%;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 18px;
+}
+
+.garden-canvas {
+  z-index: 2;
+}
+
+.resize-handles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.resize-handle {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: #3b82f6;
+  border: 2px solid white;
+  border-radius: 50%;
+  pointer-events: all;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.garden-canvas-container:hover .resize-handle {
+  opacity: 1;
+}
+
+.resize-handle.nw {
+  top: -6px;
+  left: -6px;
+  cursor: nw-resize;
+}
+
+.resize-handle.ne {
+  top: -6px;
+  right: -6px;
+  cursor: ne-resize;
+}
+
+.resize-handle.sw {
+  bottom: -6px;
+  left: -6px;
+  cursor: sw-resize;
+}
+
+.resize-handle.se {
+  bottom: -6px;
+  right: -6px;
+  cursor: se-resize;
+}
+
+.resize-handle:hover {
+  background: #2563eb;
+  transform: scale(1.2);
+}

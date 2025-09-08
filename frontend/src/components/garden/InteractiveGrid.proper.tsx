@@ -1,8 +1,7 @@
-import React, { useCallback, useRef, useEffect, useState, useMemo } from 'react';
+import React, { useCallback, useRef, useEffect, useState } from 'react';
 import { useMap } from 'react-leaflet';
 import L from 'leaflet';
 import type { GridSystem } from '../../types/garden';
-import './ResizeHandles.css';
 
 interface InteractiveGridProps {
   gridSystem: GridSystem;
@@ -11,7 +10,6 @@ interface InteractiveGridProps {
   onCellClick: (cellId: number) => void;
   onGridResize: (rows: number, cols: number) => void;
   gridVisible: boolean;
-  showResizeHandles?: boolean; // New optional prop
 }
 
 interface GridBounds {
@@ -34,9 +32,6 @@ export const InteractiveGrid: React.FC<InteractiveGridProps> = ({
   const resizeHandlesRef = useRef<L.LayerGroup | null>(null);
   const [isResizing, setIsResizing] = useState(false);
   const [currentBounds, setCurrentBounds] = useState<GridBounds | null>(null);
-  
-  // Create a stable identifier for the grid to prevent unnecessary recreation
-  const gridStableKey = `${gridVisible}-${gridSystem?.grid_cells?.length}-${gridSystem?.cell_size_feet}`;
 
   // Calculate grid dimensions from gridSystem
   const calculateGridDimensions = useCallback(() => {
@@ -98,8 +93,6 @@ export const InteractiveGrid: React.FC<InteractiveGridProps> = ({
   // Create draggable resize handles
   const createResizeHandles = useCallback((bounds: GridBounds) => {
     const handles: L.Marker[] = [];
-    
-    console.log('🎯 Creating resize handles at bounds:', bounds);
 
     // Corner positions for resize handles
     const cornerPositions = [
@@ -110,134 +103,84 @@ export const InteractiveGrid: React.FC<InteractiveGridProps> = ({
     ];
 
     cornerPositions.forEach(({ lat, lng, corner }) => {
-      console.log(`Creating ${corner} handle at [${lat.toFixed(6)}, ${lng.toFixed(6)}]`);
-      
-      // Define cursor style based on corner
-      let cursorStyle = 'nw-resize';
-      
-      switch (corner) {
-        case 'nw':
-          cursorStyle = 'nw-resize';
-          break;
-        case 'ne':
-          cursorStyle = 'ne-resize';
-          break;
-        case 'sw':
-          cursorStyle = 'sw-resize';
-          break;
-        case 'se':
-          cursorStyle = 'se-resize';
-          break;
-      }
-      
       const handle = L.marker([lat, lng], {
         icon: L.divIcon({
-          className: `resize-handle resize-${corner} custom-resize-handle`,
-          html: `
-            <div class="resize-handle-wrapper" style="
-              position: relative !important;
-              width: 20px !important;
-              height: 20px !important;
-              background: transparent !important;
-              border: none !important;
-              box-shadow: none !important;
-            ">
-              <div class="resize-handle-circle" style="
-                width: 20px !important;
-                height: 20px !important;
-                background: transparent !important;
-                border: none !important;
-                border-radius: 50% !important;
-                cursor: ${cursorStyle} !important;
-                box-shadow: none !important;
-                z-index: 1000 !important;
-                position: relative !important;
-              " 
-              onmouseover="
-                this.style.setProperty('background', 'transparent', 'important');
-                this.style.setProperty('border', 'none', 'important');
-                this.style.setProperty('box-shadow', 'none', 'important');
-              "
-              onmouseout="
-                this.style.setProperty('background', 'transparent', 'important');
-                this.style.setProperty('border', 'none', 'important');
-                this.style.setProperty('box-shadow', 'none', 'important');
-              ">
-              </div>
-            </div>
-          `,
-          iconSize: [20, 20],
-          iconAnchor: [10, 10]
+          className: `resize-handle resize-${corner}`,
+          html: `<div style="
+            width: 12px;
+            height: 12px;
+            background: #fff;
+            border: 2px solid #3388ff;
+            border-radius: 50%;
+            cursor: ${corner}-resize;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+          "></div>`,
+          iconSize: [12, 12],
+          iconAnchor: [6, 6]
         }),
-        draggable: true,
-        zIndexOffset: 1000,
-        opacity: 1 // Ensure the marker itself is visible for interaction
+        draggable: true
       });
 
       // Handle drag events
       handle.on('dragstart', () => {
         console.log(`🎯 Started dragging ${corner} handle`);
         setIsResizing(true);
-        map.dragging.disable(); // Disable map dragging during handle drag
       });
 
       handle.on('drag', (e) => {
         const marker = e.target as L.Marker;
         const newPos = marker.getLatLng();
         
-        console.log(`Dragging ${corner} to [${newPos.lat}, ${newPos.lng}]`);
-        
         // Calculate new bounds based on which corner is being dragged
         const newBounds = { ...bounds };
         
         switch (corner) {
           case 'sw':
-            newBounds.minLat = Math.min(newPos.lat, bounds.maxLat - 0.0001); // Prevent inversion
-            newBounds.minLng = Math.min(newPos.lng, bounds.maxLng - 0.0001);
+            newBounds.minLat = newPos.lat;
+            newBounds.minLng = newPos.lng;
             break;
           case 'se':
-            newBounds.minLat = Math.min(newPos.lat, bounds.maxLat - 0.0001);
-            newBounds.maxLng = Math.max(newPos.lng, bounds.minLng + 0.0001);
+            newBounds.minLat = newPos.lat;
+            newBounds.maxLng = newPos.lng;
             break;
           case 'nw':
-            newBounds.maxLat = Math.max(newPos.lat, bounds.minLat + 0.0001);
-            newBounds.minLng = Math.min(newPos.lng, bounds.maxLng - 0.0001);
+            newBounds.maxLat = newPos.lat;
+            newBounds.minLng = newPos.lng;
             break;
           case 'ne':
-            newBounds.maxLat = Math.max(newPos.lat, bounds.minLat + 0.0001);
-            newBounds.maxLng = Math.max(newPos.lng, bounds.minLng + 0.0001);
+            newBounds.maxLat = newPos.lat;
+            newBounds.maxLng = newPos.lng;
             break;
         }
 
         // Update current bounds for real-time preview
         setCurrentBounds(newBounds);
+        
+        // Optionally update grid in real-time (might be performance intensive)
+        // updateGridDisplay(newBounds);
       });
 
       handle.on('dragend', () => {
         console.log(`🎯 Finished dragging ${corner} handle`);
         setIsResizing(false);
-        map.dragging.enable(); // Re-enable map dragging
         
         if (currentBounds) {
-          // Simple grid dimension calculation - just use relative change
-          const currentRows = Math.round(gridSystem?.dimensions?.height_feet / (gridSystem?.cell_size_feet || 1)) || 4;
-          const currentCols = Math.round(gridSystem?.dimensions?.width_feet / (gridSystem?.cell_size_feet || 1)) || 4;
-          
+          // Calculate new grid dimensions
+          const cellSizeFeet = gridSystem?.cell_size_feet || 1;
           const latRange = Math.abs(currentBounds.maxLat - currentBounds.minLat);
           const lngRange = Math.abs(currentBounds.maxLng - currentBounds.minLng);
-          const originalLatRange = Math.abs(bounds.maxLat - bounds.minLat);
-          const originalLngRange = Math.abs(bounds.maxLng - bounds.minLng);
           
-          // Calculate scale factors
-          const latScale = latRange / originalLatRange;
-          const lngScale = lngRange / originalLngRange;
+          // Convert lat/lng range to approximate feet (rough conversion)
+          const feetPerLat = 364000; // Approximate feet per degree latitude
+          const feetPerLng = 364000 * Math.cos(currentBounds.minLat * Math.PI / 180);
           
-          const newRows = Math.max(1, Math.round(currentRows * latScale));
-          const newCols = Math.max(1, Math.round(currentCols * lngScale));
+          const heightFeet = latRange * feetPerLat;
+          const widthFeet = lngRange * feetPerLng;
           
-          console.log(`🔧 Scale factors: lat=${latScale.toFixed(2)}, lng=${lngScale.toFixed(2)}`);
-          console.log(`🔧 New dimensions: ${newRows}x${newCols} (was ${currentRows}x${currentCols})`);
+          const newRows = Math.max(1, Math.round(heightFeet / cellSizeFeet));
+          const newCols = Math.max(1, Math.round(widthFeet / cellSizeFeet));
           
+          console.log(`🔧 Calculated new dimensions: ${newRows}x${newCols}`);
           onGridResize(newRows, newCols);
         }
       });
@@ -245,9 +188,8 @@ export const InteractiveGrid: React.FC<InteractiveGridProps> = ({
       handles.push(handle);
     });
 
-    console.log(`✅ Created ${handles.length} resize handles`);
     return handles;
-  }, [map, gridSystem, onGridResize]);
+  }, [gridSystem, currentBounds, onGridResize]);
 
   // Update grid display
   const updateGridDisplay = useCallback((bounds: GridBounds) => {
@@ -266,7 +208,7 @@ export const InteractiveGrid: React.FC<InteractiveGridProps> = ({
 
   }, [map, gridSystem, createGridCells]);
 
-  // Main effect to manage grid and handles - only recreate when truly necessary
+  // Main effect to manage grid and handles
   useEffect(() => {
     if (!gridVisible || !gridSystem?.grid_cells?.length || !map) {
       // Clean up existing layers
@@ -281,16 +223,10 @@ export const InteractiveGrid: React.FC<InteractiveGridProps> = ({
       return;
     }
 
-    // Only create if we don't have existing layers
-    if (gridLayerRef.current && resizeHandlesRef.current) {
-      console.log('🔄 Grid layers already exist, skipping recreation');
-      return;
-    }
-
     const bounds = calculateGridDimensions();
     if (!bounds) return;
 
-    console.log('🎛️ Creating new resizable grid overlay');
+    console.log('🎛️ Creating resizable grid overlay');
 
     // Create grid layer
     const gridLayer = L.layerGroup();
@@ -314,7 +250,7 @@ export const InteractiveGrid: React.FC<InteractiveGridProps> = ({
     gridLayerRef.current = gridLayer;
     resizeHandlesRef.current = handlesLayer;
 
-    console.log('✅ New resizable grid overlay created');
+    console.log('✅ Resizable grid overlay created');
 
     // Cleanup
     return () => {
@@ -327,35 +263,7 @@ export const InteractiveGrid: React.FC<InteractiveGridProps> = ({
         resizeHandlesRef.current = null;
       }
     };
-  }, [map, gridVisible]); // Only depend on map and visibility, not gridSystem
-
-  // Separate effect to update existing grid when gridSystem changes
-  useEffect(() => {
-    if (!gridLayerRef.current || !resizeHandlesRef.current || !gridSystem?.grid_cells?.length) {
-      return;
-    }
-
-    console.log('🔄 Updating existing grid with new data');
-
-    const bounds = calculateGridDimensions();
-    if (!bounds) return;
-
-    const cellSizeFeet = gridSystem?.cell_size_feet || 1;
-    const rows = Math.round(gridSystem?.dimensions?.height_feet / cellSizeFeet) || 4;
-    const cols = Math.round(gridSystem?.dimensions?.width_feet / cellSizeFeet) || 4;
-
-    // Update grid cells
-    gridLayerRef.current.clearLayers();
-    const cells = createGridCells(bounds, rows, cols);
-    cells.forEach(cell => gridLayerRef.current?.addLayer(cell));
-
-    // Update handles
-    resizeHandlesRef.current.clearLayers();
-    const handles = createResizeHandles(bounds);
-    handles.forEach(handle => resizeHandlesRef.current?.addLayer(handle));
-
-    console.log('✅ Grid updated with new data');
-  }, [gridSystem, calculateGridDimensions, createGridCells, createResizeHandles]);
+  }, [map, gridVisible, gridSystem, calculateGridDimensions, createGridCells, createResizeHandles]);
 
   // Update bounds when currentBounds changes (during drag)
   useEffect(() => {

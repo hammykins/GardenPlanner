@@ -1,10 +1,12 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { MapContainer, TileLayer, useMap } from 'react-leaflet';
 import type { Map as LeafletMap } from 'leaflet';
 import type { LatLngTuple } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-draw/dist/leaflet.draw.css';
-import { BoundaryDrawing } from './BoundaryDrawing';
+import { FeatureDrawing } from './FeatureDrawing';
+import { FeatureLegend } from './FeatureLegend';
+import { GardenWorkspace } from './GardenWorkspace';
 import { InteractiveGrid } from './InteractiveGrid';
 import './GardenPlanner.css';
 import { useGardenData } from '../../hooks/useGardenData';
@@ -66,8 +68,47 @@ const GardenPlanner: React.FC<GardenPlannerProps> = ({ gardenId }) => {
   const [isSatellite, setIsSatellite] = useState(false);
   const [currentZoom, setCurrentZoom] = useState(19);
   const [gridVisible, setGridVisible] = useState(true);
+  const [currentView, setCurrentView] = useState<'boundary' | 'workspace'>('boundary');
+  const [savedGarden, setSavedGarden] = useState<any>(null);
   const mapRef = useRef<LeafletMap | null>(null);
 
+  // Load the most recent saved garden on mount (if exists)
+  useEffect(() => {
+    const savedGardens = useGardenStore.getState().getSavedGardens();
+    if (savedGardens.length > 0) {
+      const mostRecent = savedGardens[savedGardens.length - 1];
+      setSavedGarden(mostRecent);
+      // Don't auto-switch to workspace, let user choose
+    }
+  }, []);
+
+  // Handle boundary submission
+  const handleBoundarySubmit = async (gardenData: any) => {
+    console.log('🏡 Submitting garden boundary:', gardenData);
+    
+    // Save to the store for persistence
+    const garden = {
+      id: Date.now(), // Simple ID generation
+      ...gardenData
+    };
+    
+    useGardenStore.getState().saveGarden(garden);
+    setSavedGarden(garden);
+    setCurrentView('workspace');
+    console.log('🚀 Switching to workspace view with garden:', garden);
+  };
+
+  // If we're in workspace view, show the garden workspace
+  if (currentView === 'workspace' && savedGarden) {
+    console.log('🎯 Rendering GardenWorkspace with:', { currentView, savedGarden });
+    return (
+      <GardenWorkspace 
+        garden={savedGarden}
+      />
+    );
+  }
+
+  // Only show loading/error states when NOT in workspace view
   if (loading) {
     return <div>Loading garden data...</div>;
   }
@@ -77,20 +118,46 @@ const GardenPlanner: React.FC<GardenPlannerProps> = ({ gardenId }) => {
   }
 
   if (!garden || !gridSystem) {
+    console.log('🚫 GardenPlanner: Missing data:', {
+      hasGarden: !!garden,
+      hasGridSystem: !!gridSystem,
+      garden,
+      gridSystem
+    });
     return <div>No garden data available</div>;
   }
+
+  // If we get here, we're in boundary drawing mode
+
+  console.log('🔷 GardenPlanner: Rendering with:');
+  console.log('  - Garden:', garden?.name || 'unnamed');
+  console.log('  - GridSystem present:', !!gridSystem);
+  console.log('  - Grid visible:', gridVisible);
+  console.log('  - Cell count:', gridSystem?.grid_cells?.length || 0);
 
   const handleCellClick = (cellId: number) => {
     setSelectedCell(cellId);
   };
 
   const handleGridResize = async (rows: number, cols: number) => {
+    console.log('🏡 GardenPlanner: handleGridResize called with:', { rows, cols, gardenId });
     try {
-      await gardenService.resizeGardenGrid(gardenId, rows, cols);
-      // Refetch the grid data
-      window.location.reload(); // Simple refresh for now
+      console.log('🚀 Calling gardenService.resizeGardenGrid...');
+      const result = await gardenService.resizeGardenGrid(gardenId, rows, cols);
+      console.log('✅ Grid resize successful:', result);
+      
+      // TODO: Instead of reloading, we should update the grid state
+      // For now, let's reload after a small delay to see the result
+      setTimeout(() => {
+        console.log('🔄 Reloading page...');
+        window.location.reload();
+      }, 1000);
     } catch (error) {
-      console.error('Failed to resize grid:', error);
+      console.error('❌ Failed to resize grid:', error);
+      // Show more details about the error
+      if (error instanceof Error) {
+        console.error('Error message:', error.message);
+      }
     }
   };
 
@@ -160,6 +227,15 @@ const GardenPlanner: React.FC<GardenPlannerProps> = ({ gardenId }) => {
               />
             )}
             
+            {/* Debug grid rendering decision */}
+            {(() => {
+              console.log('🎯 Grid render check:');
+              console.log('  - gridVisible:', gridVisible);
+              console.log('  - hasGridSystem:', !!gridSystem);
+              console.log('  - willRenderGrid:', gridVisible && !!gridSystem);
+              return null;
+            })()}
+            
             {gridVisible && gridSystem && (
               <InteractiveGrid
                 gridSystem={gridSystem}
@@ -174,13 +250,21 @@ const GardenPlanner: React.FC<GardenPlannerProps> = ({ gardenId }) => {
             <MapController 
               onZoomChange={setCurrentZoom}
             />
-            <BoundaryDrawing />
+            <FeatureDrawing
+              gardenId={garden.id}
+              userId={1} // TODO: Replace with real user ID from auth
+              onFeaturesChange={() => {}}
+            />
           </MapContainer>
           
           <MapControls
             isSatellite={isSatellite}
             onToggleSatellite={() => setIsSatellite(prev => !prev)}
           />
+          
+          {/* Boundary submission component */}
+          <BoundarySubmit onSubmit={handleBoundarySubmit} />
+          
           <div className="garden-reset">
             <button
               className="reset-button"
@@ -194,25 +278,29 @@ const GardenPlanner: React.FC<GardenPlannerProps> = ({ gardenId }) => {
             >
               Reset Garden
             </button>
+            
+            {savedGarden && (
+              <button
+                className="workspace-button"
+                onClick={() => setCurrentView('workspace')}
+                style={{
+                  marginLeft: '10px',
+                  backgroundColor: '#4CAF50',
+                  color: 'white',
+                  border: 'none',
+                  padding: '8px 15px',
+                  cursor: 'pointer',
+                  borderRadius: '4px'
+                }}
+              >
+                🏡 Go to My Garden
+              </button>
+            )}
           </div>
         </div>
 
         <div className="garden-controls">
-          {selectedCell !== null && (
-            <div className="cell-info">
-              <h3>Selected Cell #{selectedCell}</h3>
-              <p>Size: {gridSystem.cell_size_feet} x {gridSystem.cell_size_feet} feet</p>
-              <PlantSelector onPlantSelect={handlePlantSelect} />
-            </div>
-          )}
-
-          <Legend 
-            items={plantedCells.map(cell => ({
-              ...cell.plant,
-              color: cell.color
-            }))}
-            onRemoveItem={handleRemovePlant}
-          />
+          <FeatureLegend features={[]} />
         </div>
         </div>
       </div>

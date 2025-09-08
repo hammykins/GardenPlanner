@@ -1,0 +1,171 @@
+/* Interactive Grid Component Styles */
+
+.interactive-grid {
+  position: relative;
+  z-index: 1000;
+  pointer-events: none; /* Only allow events on child elements */
+}
+
+.interactive-grid.hovered {
+  z-index: 1001;
+}
+
+/* Ensure grid cells can receive events */
+.interactive-grid .leaflet-interactive {
+  pointer-events: auto;
+}
+
+/* Resize Handle Styles */
+.resize-handle {
+  background-color: #3388ff;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+  pointer-events: auto !important;
+  z-index: 1005 !important; /* Higher than map controls */
+}
+
+.resize-handle:hover {
+  background-color: #2266cc;
+  transform: scale(1.2);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+}
+
+.resize-handle-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: inherit;
+  pointer-events: auto !important;
+}
+
+/* Specific resize handle cursors */
+.resize-se {
+  cursor: se-resize;
+}
+
+.resize-sw {
+  cursor: sw-resize;
+}
+
+.resize-ne {
+  cursor: ne-resize;
+}
+
+.resize-nw {
+  cursor: nw-resize;
+}
+
+/* Grid Control Button Styles */
+.grid-control-button {
+  background-color: #28a745;
+  border: 2px solid #ffffff;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto !important;
+  z-index: 1005 !important; /* Higher than map controls */
+}
+
+.grid-control-button:hover {
+  background-color: #218838;
+  transform: scale(1.1);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+}
+
+.grid-control-button.remove-row,
+.grid-control-button.remove-col {
+  background-color: #dc3545;
+}
+
+.grid-control-button.remove-row:hover,
+.grid-control-button.remove-col:hover {
+  background-color: #c82333;
+}
+
+.control-text {
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  text-align: center;
+  pointer-events: none;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+}
+
+/* Grid Info Overlay */
+.grid-info-overlay {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: bold;
+  z-index: 1002;
+  pointer-events: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.grid-dimensions {
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+
+.grid-size {
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+/* Grid Cell Hover Effects */
+.interactive-grid .leaflet-interactive {
+  transition: all 0.2s ease;
+}
+
+.interactive-grid.hovered .leaflet-interactive:hover {
+  stroke-width: 3;
+  stroke-opacity: 1;
+  fill-opacity: 0.4;
+}
+
+/* Ensure grid controls are above other map elements */
+.leaflet-marker-icon.resize-handle,
+.leaflet-marker-icon.grid-control-button {
+  z-index: 1003 !important;
+  pointer-events: auto !important;
+}
+
+/* Prevent map interaction on control hover */
+.leaflet-marker-icon.resize-handle:hover,
+.leaflet-marker-icon.grid-control-button:hover {
+  z-index: 1004 !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .grid-info-overlay {
+    top: 5px;
+    right: 5px;
+    font-size: 11px;
+    padding: 6px 8px;
+  }
+  
+  .grid-dimensions {
+    font-size: 12px;
+  }
+  
+  .grid-size {
+    font-size: 10px;
+  }
+  
+  .control-text {
+    font-size: 9px;
+  }
+}

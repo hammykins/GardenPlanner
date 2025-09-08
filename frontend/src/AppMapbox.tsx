@@ -1,12 +1,13 @@
-import { useState } from 'react'
+import React, { useState } from 'react';
 import './App.css'
 import { Header } from './components/layout/Header'
 import { MapboxGardenPlanner } from './components/garden/MapboxGardenPlanner'
 import type { Feature } from './api/features.api';
 
 function App() {
-  // For demonstration purposes, using hardcoded ID
+  // For demonstration purposes, using hardcoded IDs
   const demoGardenId = 1;
+  const demoUserId = 1;
   const [features, setFeatures] = useState<Feature[]>([]);
 
   return (
@@ -15,7 +16,7 @@ function App() {
       <main className="app-main">
         <div style={{ padding: '20px' }}>
           <h1>🌱 Garden Planner with Mapbox</h1>
-          <p>Professional garden planning with usage monitoring</p>
+          <p>Draw boundaries for different areas of your yard (house, garden beds, lawn, etc.)</p>
           
           {/* Features Summary */}
           {features.length > 0 && (
@@ -46,24 +47,19 @@ function App() {
 
           <MapboxGardenPlanner
             gardenId={demoGardenId}
+            userId={demoUserId}
             onFeaturesChange={setFeatures}
           />
           
           <div style={{ marginTop: '20px', fontSize: '14px', color: '#666' }}>
-            <strong>Setup Instructions:</strong>
+            <strong>Instructions:</strong>
             <ol>
-              <li>Get your free Mapbox token from <a href="https://account.mapbox.com/" target="_blank" rel="noopener noreferrer">https://account.mapbox.com/</a></li>
-              <li>Create a <code>.env</code> file in your frontend folder</li>
-              <li>Add: <code>VITE_MAPBOX_TOKEN=pk.your_token_here</code></li>
-              <li>Restart your dev server</li>
+              <li>First, get your free Mapbox token from https://account.mapbox.com/</li>
+              <li>Update the token in MapboxGardenPlanner.tsx</li>
+              <li>Use the polygon tool to draw boundaries</li>
+              <li>Name each feature (yard, house, garden, etc.)</li>
+              <li>Edit or delete features as needed</li>
             </ol>
-            <strong>Safety Features:</strong>
-            <ul>
-              <li>✅ Usage tracking with alerts at 50%, 75%, 90%</li>
-              <li>✅ Daily usage counter in browser console</li>
-              <li>✅ Free tier: 50,000 map loads per month</li>
-              <li>✅ Professional satellite imagery and drawing tools</li>
-            </ul>
           </div>
         </div>
       </main>
