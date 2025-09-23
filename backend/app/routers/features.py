@@ -1,9 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List
 from app.database import get_db
 from app.models.feature import Feature
+from app.models.user import User
+from app.models.garden import Garden
 
 router = APIRouter()
 
@@ -12,7 +14,7 @@ class FeatureCreate(BaseModel):
     boundary: str  # GeoJSON string
     color: str
     garden_id: int
-    user_id: Optional[int] = None
+    user_id: int
 
 class FeatureOut(BaseModel):
     id: int
@@ -20,7 +22,7 @@ class FeatureOut(BaseModel):
     boundary: str
     color: str
     garden_id: int
-    user_id: Optional[int]
+    user_id: int
     created_at: str
 
     class Config:
@@ -32,14 +34,7 @@ def list_features(garden_id: int, db: Session = Depends(get_db)):
 
 @router.post("/features/", response_model=FeatureOut)
 def create_feature(feature: FeatureCreate, db: Session = Depends(get_db)):
-    # Create feature without user_id for development
-    db_feature = Feature(
-        name=feature.name,
-        boundary=feature.boundary,
-        color=feature.color,
-        garden_id=feature.garden_id,
-        user_id=None  # No user required for development
-    )
+    db_feature = Feature(**feature.dict())
     db.add(db_feature)
     db.commit()
     db.refresh(db_feature)

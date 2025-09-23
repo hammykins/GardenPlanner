@@ -1,36 +1,36 @@
 # Garden Yard Planner
 
-A modern web-based application for planning and managing yard features with professional mapping tools, cost-optimized design, and interactive feature management.
+A modern web-based application for planning and tracking gardens and landscaping projects with advanced spatial analysis and interactive grid systems.
 
 ## 🌟 Key Features
 
-### Professional Mapping System
-- **Mapbox GL JS Integration**: Professional-grade mapping with drawing tools
-- **Cost-Optimized Design**: USGS National Map imagery (free unlimited tiles) + Mapbox drawing tools
-- **Multi-Feature Management**: Draw and name multiple yard features (yard, house, garden beds, etc.)
-- **Interactive Feature Control**: Hover effects with delete functionality for all saved features
-- **Custom Color Selection**: 8 preset colors + custom color picker for feature styling
+### Interactive Grid System
+- **Smart Boundary Drawing**: Draw precise yard boundaries with polygon tools
+- **Separate Grid Overlay**: Independent planting grid that fits within your boundary
+- **Intuitive Grid Controls**: "Insert Row/Column" and "Delete Row/Column" buttons
+- **Real-time Dimensions**: Live display of grid size (e.g., "Grid: 6 × 6")
+- **Visual Clarity**: Subtle dashed grid lines that don't interfere with boundary visualization
+- **State Persistence**: Grid settings saved between browser sessions
 
-### Address Search & Navigation
-- **Intelligent Address Search**: Mapbox geocoding with autocomplete dropdown
-- **OpenStreetMap Fallback**: Works without Mapbox token using free alternatives
-- **Smooth Navigation**: Professional flyTo animations for location changes
-- **High-Resolution Imagery**: Zoom up to level 22 with satellite+topographic layers
+### Address Search & Mapping
+- **Intelligent Address Search**: Automatically center map on your property
+- **Dual Map Views**: Toggle between satellite imagery and street map views
+- **High-Resolution Mapping**: Zoom levels up to 22 for precise planning
+- **Location Memory**: Preserves your searched location when resetting garden data
 
-### Feature Management & Persistence
-- **Professional Drawing Tools**: Mapbox Draw for precise polygon creation
-- **Database Persistence**: PostgreSQL backend with full CRUD operations
-- **Interactive Management**: Hover popups with delete confirmation dialogs
-- **Real-time Updates**: Immediate visual feedback for all feature operations
-- **Usage Monitoring**: Built-in Mapbox usage tracking with progressive alerts
+### Advanced Garden Planning
+- **Boundary Management**: Draw and edit property boundaries independently from planting areas
+- **Smart Reset**: "Reset Garden" preserves location while clearing plant data
+- **State Management**: Robust undo/redo system with persistent storage
+- **Future Spatial Features**: PostGIS integration for sunlight analysis and spatial operations
 
 ## 🏗️ Architecture
 
 - **Backend**: Python FastAPI with SQLAlchemy ORM
 - **Frontend**: React + TypeScript with Vite build system  
-- **Database**: PostgreSQL with spatial capabilities
+- **Database**: SQLite (development) / PostgreSQL + PostGIS (production)
 - **Mapping**: Mapbox GL JS + Mapbox Draw + USGS National Map imagery
-- **State Management**: React state with API persistence
+- **State Management**: Zustand store with localStorage persistence
 
 ## 📁 Project Structure
 
@@ -42,20 +42,19 @@ GardenPlanner/
 │   │   ├── routers/           # API endpoints (/api/*)
 │   │   ├── services/          # Business logic
 │   │   ├── main.py            # FastAPI application
-│   │   └── database.py        # PostgreSQL configuration
+│   │   └── database.py        # Database configuration
 │   ├── venv/                  # Python virtual environment
 │   └── requirements.txt       # Python dependencies
-├── frontend-vite/             # React + Vite frontend (current)
+├── frontend/                   # React + Vite frontend
 │   ├── src/
 │   │   ├── components/        # React components
-│   │   │   └── garden/        # Garden-specific components with Mapbox
-│   │   ├── stores/           # React state management
+│   │   │   └── garden/        # Garden-specific components
+│   │   ├── stores/           # Zustand state management
 │   │   ├── hooks/            # Custom React hooks
 │   │   └── api/              # API client functions
 │   ├── package.json          # Node.js dependencies
-│   └── vite.config.ts        # Vite build configuration with API proxy
-├── frontend/                  # Legacy React frontend
-└── README.md                  # This documentation
+│   └── vite.config.ts        # Vite build configuration
+└── INSTALLATION_GUIDE.md      # Detailed setup instructions
 
 ## 🚀 Quick Start
 
@@ -69,52 +68,52 @@ For detailed setup instructions, see [INSTALLATION_GUIDE.md](INSTALLATION_GUIDE.
    winget install OpenJS.NodeJS.LTS
    ```
 
-2. **PostgreSQL 13+** (required for spatial features):
+2. **Configure PATH** (if commands not recognized):
    ```powershell
-   winget install PostgreSQL.PostgreSQL.17
+   # Add Node.js to PATH
+   $currentPath = [System.Environment]::GetEnvironmentVariable("PATH", [System.EnvironmentVariableTarget]::User)
+   $newPath = $currentPath + ";C:\Program Files\nodejs"
+   [System.Environment]::SetEnvironmentVariable("PATH", $newPath, [System.EnvironmentVariableTarget]::User)
+   
+   # Test installations
+   node --version         # Should show v22.x.x
+   python.exe --version   # Should show Python 3.12.x
    ```
-
-3. **Mapbox Token** (optional but recommended):
-   - Sign up at https://mapbox.com for enhanced address search
-   - Free tier includes 50,000 requests/month
 
 ### Development Setup
 
-#### Environment Configuration
-Create environment files for Mapbox integration:
-
+#### Option 1: Quick Setup (Recommended)
 ```powershell
-# Create .env in project root (optional - for enhanced features)
-echo "MAPBOX_ACCESS_TOKEN=your_mapbox_token_here" > .env
-
-# Create .env in frontend-vite directory
-echo "VITE_MAPBOX_ACCESS_TOKEN=your_mapbox_token_here" > frontend-vite/.env
+# Run automated setup script
+.\setup_quick_dev.ps1
 ```
 
-#### Backend Setup
+#### Option 2: Manual Setup
+
+**Backend Setup:**
 ```powershell
 cd backend
 python.exe -m venv venv
 .\venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-
-# Setup PostgreSQL database
-python setup_tables.py
 ```
 
-#### Frontend Setup
+**Frontend Setup:**
 ```powershell
-cd frontend-vite  
+cd frontend  
 npm install
 ```
 
-#### Start Development Servers
+**Start Development Servers:**
 ```powershell
-# Terminal 1: Backend (from project root)
-cd backend; .\venv\Scripts\Activate.ps1; python.exe -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+# Terminal 1: Backend
+cd backend
+.\venv\Scripts\Activate.ps1
+python.exe -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
-# Terminal 2: Frontend (from project root)
-cd frontend-vite; npm run dev
+# Terminal 2: Frontend
+cd frontend
+npm run dev
 ```
 
 **Access Application:**
@@ -124,58 +123,27 @@ cd frontend-vite; npm run dev
 
 ## 🎮 Using the Garden Planner
 
-1. **Search Your Location**: Enter your address in the search bar for automatic map centering
-2. **Draw Features**: Use professional Mapbox Draw tools to create boundaries:
-   - Click the polygon tool to start drawing
-   - Click points to define your feature boundary
-   - Double-click to complete the polygon
-3. **Name & Style Features**: Choose from 8 preset colors or use custom color picker
-4. **Manage Features**: Hover over saved features to see delete options
-5. **Multiple Features**: Draw separate features for yard, house, garden beds, paths, etc.
-6. **Professional Results**: Features are saved to database with persistent storage
+1. **Search Your Location**: Enter your address in the search bar
+2. **Draw Yard Boundary**: Use the polygon tool to outline your property
+3. **Add Planting Grid**: Click "📐 Add Grid" to overlay a planting grid
+4. **Adjust Grid**: Use "Insert Row/Column" and "Delete Row/Column" to customize
+5. **Plan Your Garden**: Grid cells will be used for plant placement (coming soon)
+6. **Reset When Needed**: "Reset Garden" clears data but preserves your location
 
-### Mapping Features
-- **Unlimited USGS Imagery**: Free satellite and topographic base maps
-- **Professional Drawing**: Mapbox GL Draw tools for precise polygon creation
-- **Interactive Management**: Hover effects with professional popup design
-- **High-Resolution Zoom**: Up to level 22 for detailed planning
-- **Smooth Navigation**: Professional flyTo animations and controls
-
-## � Screenshots
-
-### Early Development Phase
-![Garden Planner Early Phase](docs/screenshots/mapper_early_phase.PNG)
-*Garden planner showing the professional Mapbox interface with USGS imagery and drawing tools*
-
-### Feature Creation System  
-![Feature Creation Dialog](docs/screenshots/feature_creation.PNG)
-*Professional feature creation modal with custom naming and color selection (8 presets + color picker)*
-
-The application features a professional mapping interface built with Mapbox GL JS, offering:
-- **USGS National Map Imagery**: High-resolution satellite and topographic base maps (free unlimited usage)
-- **Professional Drawing Tools**: Mapbox Draw integration for precise polygon creation  
-- **Enhanced User Experience**: Custom color selection, hover interactions, and intuitive controls
-- **Cost-Optimized Design**: Hybrid approach using free imagery with professional drawing capabilities
-
-## �🛠️ Technical Stack
+## 🛠️ Technical Stack
 
 **Backend**:
 - **FastAPI**: Modern Python web framework with automatic API documentation
-- **SQLAlchemy**: Python ORM with PostgreSQL integration
-- **PostgreSQL**: Production database with spatial capabilities
+- **SQLAlchemy**: Python ORM with support for SQLite and PostgreSQL
+- **PostGIS**: Spatial database extension (planned for production)
 - **Python 3.12**: Latest Python with enhanced performance
 
 **Frontend**:
 - **React 18**: Modern UI library with hooks and concurrent features
 - **TypeScript**: Type-safe JavaScript for better development experience  
-- **Vite**: Fast build tool and development server with API proxy
+- **Vite**: Fast build tool and development server
 - **Mapbox GL JS**: Professional mapping library with drawing capabilities
-- **Mapbox Draw**: Interactive polygon drawing and editing tools
-
-**Mapping & Imagery**:
-- **USGS National Map**: Free unlimited satellite+topographic imagery
-- **Mapbox Geocoding**: Enhanced address search and location services
-- **PostGIS Ready**: Spatial database extensions for future features
+- **Zustand**: Lightweight state management with persistence
 
 **Development Tools**:
 - **npm**: Package management for Node.js dependencies
@@ -184,41 +152,22 @@ The application features a professional mapping interface built with Mapbox GL J
 
 ## 🔧 Advanced Configuration
 
-### Mapbox Integration
-The application uses a hybrid approach for optimal cost and functionality:
-
-```env
-# .env (project root)
-MAPBOX_ACCESS_TOKEN=your_token_here
-
-# frontend-vite/.env  
-VITE_MAPBOX_ACCESS_TOKEN=your_token_here
-```
-
-**Mapbox Features**:
-- **With Token**: Enhanced address search, geocoding, professional drawing tools
-- **Without Token**: Still fully functional using OpenStreetMap fallback for search
-- **Cost Optimization**: USGS imagery provides free unlimited base maps
-
-### PostgreSQL Configuration
+### PostgreSQL Setup (Optional - for spatial features)
 ```powershell
-# Install PostgreSQL with spatial extensions
+# Install PostgreSQL
 winget install PostgreSQL.PostgreSQL.17
 
-# Create database
+# Create database with PostGIS
 psql -U postgres
 CREATE DATABASE garden_planner;
 \c garden_planner;
-CREATE EXTENSION IF NOT EXISTS postgis;
+CREATE EXTENSION postgis;
 ```
 
 ### Environment Variables
 ```powershell
-# Database connection (if not using defaults)
+# For PostgreSQL (instead of default SQLite)
 $env:DATABASE_URL = "postgresql://postgres:your_password@localhost:5432/garden_planner"
-
-# Optional Mapbox token
-$env:MAPBOX_ACCESS_TOKEN = "pk.your_mapbox_token_here"
 ```
 
 ## 🐛 Troubleshooting
@@ -226,65 +175,40 @@ $env:MAPBOX_ACCESS_TOKEN = "pk.your_mapbox_token_here"
 ### Common Issues
 
 **"Python not found" or "npm not found"**:
-- Use full paths: `python.exe` instead of `python`
-- Verify installations: `python.exe --version` and `node --version`
+- Follow PATH configuration steps in Quick Start section
+- Use full paths if needed: `python.exe` instead of `python`
 
 **Database connection issues**:
-- Ensure PostgreSQL service is running: `Get-Service postgresql*`
-- Check database exists and has proper permissions
-- Verify `DATABASE_URL` if using custom configuration
-
-**Mapbox features not working**:
-- Verify Mapbox token is correctly set in both `.env` files
-- Application works without token using OpenStreetMap fallback
-- Check browser console for API errors
+- SQLite: Check write permissions in backend directory
+- PostgreSQL: Verify service is running with `Get-Service postgresql*`
 
 **Port conflicts**:
+- Backend: Default 8000 (change with `--port 8001`)  
 - Frontend: Default 5173 (configured in vite.config.ts)
-- Backend: Default 8000 (change with `--port 8001`)
-- Close existing terminals if ports remain occupied
-
-**Terminal management issues**:
-- VS Code may open multiple terminals - close unused ones
-- Use Ctrl+C to stop servers properly before restarting
-- If ports remain occupied: `taskkill /F /IM node.exe` or `taskkill /F /IM python.exe`
 
 ### Getting Help
 - Check [INSTALLATION_GUIDE.md](INSTALLATION_GUIDE.md) for detailed setup instructions
 - Review the API documentation at http://localhost:8000/docs when backend is running
-- Check browser console (F12) for frontend errors
-- Verify both services are running on correct ports
 
 ## 🚀 Future Development
 
 ### Planned Features
-- **Plant Database Integration**: USDA Plants API and Trefle.io for comprehensive plant information
+- **Plant Management**: Visual plant placement on grid cells with species information
 - **Spatial Analysis**: PostGIS-powered sunlight analysis and optimal plant placement
-- **Weather Integration**: Real-time weather data and smart irrigation scheduling  
+- **Weather Integration**: Real-time weather data and smart irrigation scheduling
 - **Seasonal Planning**: Climate-aware planting and harvest calendars
 - **Mobile Responsive**: Touch-friendly interface for tablets and phones
-- **Export Features**: PDF generation and GIS format exports
 
-### Current Implementation Status
-- ✅ **Professional Mapping**: Mapbox GL JS with drawing tools
-- ✅ **Cost-Optimized Design**: USGS imagery + Mapbox tools
-- ✅ **Multi-Feature Management**: Database persistence with CRUD operations
-- ✅ **Interactive UX**: Hover effects, color picker, delete functionality
-- ✅ **Address Search**: Geocoding with fallback options
-- 🔄 **Plant Management**: Foundation ready for plant placement features
-
-### Technical Roadmap
-- **Enhanced Spatial Features**: Advanced PostGIS integration
-- **Performance Optimization**: Database indexing and query optimization
+### Upcoming Technical Improvements
+- **Docker Containerization**: Consistent development environments and easy deployment
 - **Testing Suite**: Comprehensive unit and integration tests
-- **Docker Containerization**: Consistent development environments
 - **CI/CD Pipeline**: Automated testing and deployment
-- **Advanced Spatial Analysis**: Integration with satellite imagery processing
+- **Performance Optimization**: Database indexing and query optimization
+- **Advanced Spatial Features**: Integration with satellite imagery and terrain analysis
 
 ### Contributing
 This project is in active development. The current focus is on:
-1. ✅ Professional mapping system (completed)
-2. 🔄 Plant database integration and management features  
-3. 📋 Advanced spatial analysis capabilities
-4. 📋 Weather integration and smart scheduling
-5. 📋 Mobile responsiveness and enhanced UX
+1. Stabilizing the grid system and UI components
+2. Adding plant placement and management features
+3. Implementing spatial analysis capabilities
+4. Preparing for containerization and production deployment

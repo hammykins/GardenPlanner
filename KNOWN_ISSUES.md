@@ -1,21 +1,21 @@
 # Known Issues
 
+## Current Status
+The application has been successfully migrated from Leaflet to Mapbox GL JS. Previous Leaflet-related issues have been resolved.
+
 ## Dependencies
 
-### leaflet-draw: `_flat` deprecation warning
+### Mapbox GL JS
+- **Status**: Production ready
+- **Version**: 3.14.0+
+- **Known Issues**: None currently
 
-**Issue:** Warning in console about deprecated use of `_flat` method:
-```
-Deprecated use of _flat, please use L.LineUtil.isFlat instead.
-```
+### Database
+- **PostgreSQL**: Requires proper setup for spatial features
+- **Connection**: Ensure PostgreSQL is running on port 5432
 
-**Status:** Waiting for upstream fix in leaflet-draw
-- This warning comes from leaflet-draw still using the deprecated `_flat` method
-- Not a functional issue, just a deprecation warning
-- Will be resolved when leaflet-draw updates to use `L.LineUtil.isFlat`
+## Environment Variables
+- **Mapbox Token**: Optional but recommended for enhanced geocoding
+- **Fallback**: OpenStreetMap used when Mapbox token not available
 
-**Track Progress:**
-- Issue on leaflet-draw GitHub repository
-- Update leaflet-draw once a new version is released that fixes this
-
-Last checked: August 29, 2025
+Last updated: September 20, 2025
