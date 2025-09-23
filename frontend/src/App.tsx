@@ -1,74 +1,34 @@
-import { useState } from 'react'
-import './App.css'
-import { Header } from './components/layout/Header'
-import { MapboxGardenPlanner } from './components/garden/MapboxGardenPlanner'
+
+import { useState } from 'react';
+import './App.css';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Header } from './components/layout/Header';
+import { MapboxGardenPlanner } from './components/garden/MapboxGardenPlanner';
+import LoginSignup from './components/auth/LoginSignup';
+import SetupPassword from './components/auth/SetupPassword';
+import HomePage from './components/HomePage';
 import type { Feature } from './api/features.api';
 
+
 function App() {
-  // For demonstration purposes, using hardcoded ID
   const demoGardenId = 1;
   const [features, setFeatures] = useState<Feature[]>([]);
 
   return (
-    <div className="app">
-      <Header />
-      <main className="app-main">
-        <div style={{ padding: '20px' }}>
-          <h1>🌱 Garden Planner with Mapbox</h1>
-          <p>Professional garden planning with usage monitoring</p>
-          
-          {/* Features Summary */}
-          {features.length > 0 && (
-            <div style={{ 
-              marginBottom: '20px', 
-              padding: '10px', 
-              background: '#f5f5f5', 
-              borderRadius: '5px' 
-            }}>
-              <strong>Your Features:</strong>
-              <ul>
-                {features.map(feature => (
-                  <li key={feature.id}>
-                    <span style={{ 
-                      display: 'inline-block', 
-                      width: '12px', 
-                      height: '12px', 
-                      backgroundColor: feature.color,
-                      marginRight: '8px',
-                      borderRadius: '2px'
-                    }}></span>
-                    {feature.name}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          <MapboxGardenPlanner
-            gardenId={demoGardenId}
-            onFeaturesChange={setFeatures}
-          />
-          
-          <div style={{ marginTop: '20px', fontSize: '14px', color: '#666' }}>
-            <strong>Setup Instructions:</strong>
-            <ol>
-              <li>Get your free Mapbox token from <a href="https://account.mapbox.com/" target="_blank" rel="noopener noreferrer">https://account.mapbox.com/</a></li>
-              <li>Create a <code>.env</code> file in your frontend folder</li>
-              <li>Add: <code>VITE_MAPBOX_TOKEN=pk.your_token_here</code></li>
-              <li>Restart your dev server</li>
-            </ol>
-            <strong>Safety Features:</strong>
-            <ul>
-              <li>✅ Usage tracking with alerts at 50%, 75%, 90%</li>
-              <li>✅ Daily usage counter in browser console</li>
-              <li>✅ Free tier: 50,000 map loads per month</li>
-              <li>✅ Professional satellite imagery and drawing tools</li>
-            </ul>
-          </div>
-        </div>
-      </main>
-    </div>
-  )
+    <BrowserRouter>
+      <div className="app">
+        <Header />
+        <main className="app-main">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<LoginSignup />} />
+            <Route path="/setup-password" element={<SetupPassword />} />
+            {/* Add more routes as needed */}
+          </Routes>
+        </main>
+      </div>
+    </BrowserRouter>
+  );
 }
 
 export default App

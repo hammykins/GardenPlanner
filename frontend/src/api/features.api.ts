@@ -6,7 +6,7 @@ export interface Feature {
   boundary: string; // GeoJSON string
   color: string;
   garden_id: number;
-  user_id?: number;
+  user_id: number;
   created_at: string;
 }
 
@@ -15,7 +15,7 @@ export interface FeatureCreate {
   boundary: string;
   color: string;
   garden_id: number;
-  user_id?: number;
+  user_id: number;
 }
 
 const API_URL = '/api/features/';

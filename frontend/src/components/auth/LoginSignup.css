@@ -1,0 +1,120 @@
+.login-signup-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f6faf7;
+}
+
+.login-signup-card {
+  display: flex;
+  box-shadow: 0 4px 32px rgba(80, 120, 80, 0.12);
+  border-radius: 18px;
+  overflow: hidden;
+  background: #fff;
+  max-width: 700px;
+  width: 100%;
+}
+
+.side-panel {
+  background: linear-gradient(135deg, #b7c9a7 60%, #e1e8e3 100%);
+  color: #2d3a2e;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 32px;
+}
+
+.main-panel {
+  flex: 2;
+  padding: 48px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.handwritten {
+  font-family: 'Pacifico', 'Caveat', cursive, sans-serif;
+  font-size: 2.2rem;
+  color: #4a6c4a;
+  margin-bottom: 12px;
+}
+
+.auth-form {
+  width: 100%;
+  max-width: 340px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.input {
+  padding: 12px 16px;
+  border: 1.5px solid #b7c9a7;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: #f6faf7;
+  color: #2d3a2e;
+  transition: border-color 0.2s;
+}
+.input:focus {
+  border-color: #4a6c4a;
+  outline: none;
+}
+
+.submit-btn {
+  padding: 12px 0;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  color: #fff;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(80, 120, 80, 0.08);
+  transition: background 0.2s;
+}
+.submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.toggle-btn {
+  margin-top: 24px;
+  padding: 10px 32px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  color: #2d3a2e;
+  background: #e1e8e3;
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: 0 2px 8px rgba(80, 120, 80, 0.08);
+  transition: background 0.2s;
+}
+
+.switch-link {
+  margin-top: 8px;
+  font-size: 1rem;
+  color: #4a6c4a;
+}
+.link-btn {
+  background: none;
+  border: none;
+  color: #4a6c4a;
+  font-family: 'Pacifico', 'Caveat', cursive, sans-serif;
+  font-size: 1.05rem;
+  cursor: pointer;
+  text-decoration: underline;
+  margin-left: 4px;
+}
+
+.message {
+  margin-top: 8px;
+  color: #4a6c4a;
+  font-size: 1rem;
+  text-align: center;
+}
