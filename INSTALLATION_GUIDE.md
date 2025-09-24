@@ -218,7 +218,7 @@ The Garden Planner includes an advanced grid system for organizing planting area
 - **Backend**: FastAPI (Python 3.12) with SQLAlchemy ORM
 - **Database**: SQLite for development, PostgreSQL + PostGIS for production spatial features
 - **Frontend**: React 18 + TypeScript with Vite build system
-- **Mapping**: Leaflet with drawing capabilities and satellite imagery
+- **Mapping**: Mapbox GL JS with professional drawing capabilities and cost-optimized USGS imagery
 - **Styling**: CSS modules with responsive design
 
 ## Future: Docker Containerization

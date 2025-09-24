@@ -1,21 +1,5 @@
 # Copilot Instructions
 
-## Development Methodology
-
-### **Mapbox API Documentation Priority**
-When working with mapping functionality:
-1. **ALWAYS consult Mapbox API documentation first**: https://docs.mapbox.com/mapbox-gl-js/api/
-2. **Use official Mapbox examples**: https://docs.mapbox.com/mapbox-gl-js/example/
-3. **Follow Mapbox best practices**: Use `addInteraction()`, feature states, and official layer patterns
-4. **Prefer official patterns over custom implementations**: Use documented API methods
-5. **Check for Mapbox Draw specific documentation**: https://github.com/mapbox/mapbox-gl-draw/blob/main/docs/API.md
-
-### **External API Documentation Priority Order**
-1. **Mapbox GL JS**: Official documentation for all mapping features
-2. **React/TypeScript**: Official docs for component patterns
-3. **FastAPI**: Official docs for backend API patterns
-4. **PostgreSQL/PostGIS**: Official docs for spatial database features
-
 ## PowerShell Environment
 You are in a PowerShell environment. When providing terminal commands:
 - Do NOT use `&&` to chain commands (not supported in PowerShell)
@@ -81,39 +65,29 @@ cd frontend; npm run dev
 # Garden Yard Planner - AI Assistant Instructions
 
 ## Current Project Status (Updated September 2025)
-This is a web-based garden and yard planning application with a working FastAPI backend, React frontend with professional mapping system, and PostgreSQL database for development.
+This is a web-based garden and yard planning application currently in active development. The project has a working FastAPI backend, React frontend with interactive grid system, and uses SQLite for development (with PostgreSQL planned for production).
 
 ### Current Architecture
-- **Backend** (`/backend/`): Python FastAPI with SQLAlchemy ORM, PostgreSQL database with spatial features
-- **Frontend** (`/frontend/`): React + TypeScript with Vite, featuring Mapbox GL JS with professional drawing tools
-- **Database**: PostgreSQL with spatial capabilities for feature storage
-- **State Management**: React state with API persistence
-- **Mapping**: Mapbox GL JS with Mapbox Draw for professional polygon creation and editing
+- **Backend** (`/backend/`): Python FastAPI with SQLAlchemy ORM, currently using SQLite database
+- **Frontend** (`/frontend/`): React + TypeScript with Vite, featuring Mapbox GL JS with drawing tools and interactive grid system
+- **Database**: SQLite for development, PostgreSQL + PostGIS planned for production spatial features
+- **State Management**: Zustand store with localStorage persistence
 
 ### Key Working Features
-1. **Professional Mapping System**: 
-   - Mapbox GL JS with custom USGS National Map imagery (free unlimited tiles)
-   - Mapbox Draw tools for professional polygon creation and editing
-   - Interactive feature management with hover effects and deletion
-   - Address search with geocoding and map centering
+1. **Interactive Grid System**: 
+   - Separate polygon boundary drawing for yard outline
+   - Independent grid overlay with insert/delete row/column controls
+   - Real-time grid dimension display and persistence
    
-2. **Feature Management**: 
-   - Multi-feature boundary drawing (yard, house, garden beds, etc.)
-   - Custom naming and color selection (8 presets + custom color picker)
-   - Persistent storage with full CRUD operations
-   - Interactive hover effects with delete functionality
-   - High-resolution zoom (up to level 22) with professional satellite+topographic imagery
-   
-3. **Cost-Optimized Design**: 
-   - USGS National Map for unlimited free imagery
-   - Mapbox usage limited to drawing tools only (~90% cost reduction)
-   - Built-in usage tracking with progressive alerts
-   - Hybrid approach maximizing functionality while minimizing costs
+2. **Address Search & Mapping**: 
+   - Address search with automatic map centering
+   - Satellite/street view toggle
+   - High-resolution zoom (up to level 22)
    
 3. **Smart State Management**: 
    - Reset function that preserves location while clearing garden data
    - Persistent storage across browser sessions
-   - Centralized React state with database persistence
+   - Centralized Zustand store for all garden state
 
 ### Current Development Environment
 - **Path Configuration**: Both Node.js and Python paths configured in Windows PATH
@@ -123,31 +97,31 @@ This is a web-based garden and yard planning application with a working FastAPI 
 
 ## Current Database Schemas (Working Implementation)
 
-### Feature Models (Currently Implemented)
+### Basic Models (Currently Implemented)
 ```python
-# backend/app/models/feature.py - Current working feature model
-class Feature(Base):
-    __tablename__ = "features"
-    id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, nullable=True)  # Nullable for development
-    garden_id = Column(Integer, nullable=True)  # Nullable for development
-    name = Column(String)
-    boundary = Column(Text)  # GeoJSON string
-    color = Column(String)
-    created_at = Column(DateTime, default=datetime.utcnow)
+# backend/app/models/ - Current working models
+# These are basic models, spatial features will be added later with PostGIS
 
-# Additional models exist for future plant management and spatial features
+class Garden(Base):
+    __tablename__ = "gardens"
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    boundary_data = Column(Text)  # JSON string of polygon coordinates
+    
+class Plant(Base):
+    __tablename__ = "plants"
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    species = Column(String)
+    
+# Additional models exist but are not fully implemented yet
 ```
 
 ## Current API Endpoints (Working)
 
-### Feature Management
+### Garden Management
 ```python
-# backend/app/routers/features.py - Current working endpoints with /api prefix
-GET /api/features/?garden_id={id}  # List features for a garden
-POST /api/features/               # Create new feature
-PUT /api/features/{feature_id}    # Update existing feature
-DELETE /api/features/{feature_id} # Delete feature
+# backend/app/routers/ - Current working endpoints with /api prefix
 GET /api/gardens/{garden_id}
 POST /api/gardens/
 PUT /api/gardens/{garden_id}
@@ -156,58 +130,44 @@ DELETE /api/gardens/{garden_id}
 GET /api/plants/
 POST /api/plants/
 
-# All endpoints return working data with PostgreSQL backend
+# All endpoints return mock data currently for frontend development
 ```
 
 ## Current Frontend Components (Working Implementation)
 
-### Mapbox Components
+### Grid System Components
 ```typescript
-// frontend/src/components/garden/MapboxGardenPlanner.tsx
-interface MapboxGardenPlannerProps {
-  gardenId: number;
-  onFeaturesChange: (features: Feature[]) => void;
+// frontend/src/components/garden/InteractiveGrid.tsx
+interface InteractiveGridProps {
+  isGridVisible: boolean;
+  rows: number;
+  cols: number;
 }
 
-// Main component with:
-// - Mapbox GL JS map with USGS imagery
-// - Mapbox Draw tools for polygon creation
-// - Interactive feature management with hover effects
-// - Professional popup design with delete functionality
+// Generates grid cells within boundary polygon
+// Uses dashed lines for visual clarity
+// Controlled by garden store state
 
-// frontend/src/components/garden/AddressSearch.tsx  
-// Provides address search with Mapbox geocoding:
-// - Autocomplete dropdown with search results
-// - Fallback to OpenStreetMap if no Mapbox token
-// - Map centering on address selection
-
-// frontend/src/components/garden/FeatureNameModal.tsx
-// Feature creation modal with:
-// - Name input for custom feature naming
-// - 8 preset colors + custom color picker
-// - Professional styling and validation
+// frontend/src/components/garden/GridControls.tsx  
+// Provides intuitive UI controls:
+// - Toggle: "📐 Add Grid" / "🎯 Grid Active"
+// - "Insert Row/Column" and "Delete Row/Column" buttons
+// - Real-time grid dimensions display
 ```
 
-### API Integration (Current Implementation)
+### State Management (Current Implementation)
 ```typescript
-// frontend/src/api/features.api.ts - Feature management
-interface Feature {
-  id: number;
-  name: string;
-  boundary: string; // GeoJSON string
-  color: string;
-  garden_id: number;
-  user_id?: number;
-  created_at: string;
-}
-
-interface FeatureCreate {
-  name: string;
-  boundary: string;
-  color: string;
-  garden_id: number;
-  user_id?: number;
-}
+// frontend/src/stores/gardenStore.ts - Zustand store
+interface GardenState {
+  // Location and boundary
+  address: string | null;
+  center: [number, number] | null; 
+  boundary: number[][] | null;
+  
+  // Grid system
+  isGridVisible: boolean;
+  gridRows: number;
+  gridCols: number;
   
   // Actions
   setAddress: (address: string, lat: number, lng: number) => void;
@@ -228,7 +188,7 @@ interface FeatureCreate {
 backend/
   ├── app/
   │   ├── main.py              # FastAPI app with /api/* endpoints
-  │   ├── database.py          # PostgreSQL configuration
+  │   ├── database.py          # SQLite configuration
   │   ├── models/              # SQLAlchemy models
   │   └── routers/             # API endpoints
 frontend/
