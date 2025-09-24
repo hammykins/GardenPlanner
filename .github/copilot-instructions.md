@@ -1,5 +1,17 @@
-# Copilot Instructions
+# Garden Planner - Copilot Instructions
 
+<<<<<<< HEAD
+## Project Overview
+Web-based garden planning application with FastAPI backend and React frontend featuring Mapbox mapping.
+
+## Environment & Setup
+- **OS**: Windows PowerShell (use `;` not `&&` to chain commands)
+- **Backend**: Python 3.12+ FastAPI on port 8000
+- **Frontend**: React+TypeScript+Vite on port 5173
+- **Database**: SQLite (development), PostgreSQL (optional)
+
+### Development Commands
+=======
 ## PowerShell Environment
 You are in a PowerShell environment. When providing terminal commands:
 - Do NOT use `&&` to chain commands (not supported in PowerShell)
@@ -48,22 +60,44 @@ When updating API URLs or configuration:
 4. **Start servers in correct order**: Backend first (port 8000), then frontend (port 5173)
 
 **Solution**: Use manual server startup commands:
+>>>>>>> origin/main
 ```powershell
-# Terminal 1 - Backend (from project root)
-cd backend; .\venv\Scripts\Activate.ps1; python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-
-# Terminal 2 - Frontend (from project root)  
-cd frontend; npm run dev
+# Backend: cd backend; .\venv\Scripts\Activate.ps1; python -m uvicorn app.main:app --reload
+# Frontend: cd frontend; npm run dev
 ```
 
-**If Vite tries to use a different port (like 5174)**:
-1. Stop the Vite server (Ctrl+C)
-2. Close the terminal tab completely
-3. Kill any remaining Node.js processes if needed
-4. Open fresh terminal and restart with `npm run dev` to claim port 5173
+## Current Architecture
 
-# Garden Yard Planner - AI Assistant Instructions
+### Working Features
+1. **Mapbox Integration**: 
+   - Interactive map with USGS National Map imagery (free)
+   - Mapbox Draw tools for polygon creation
+   - Feature management (create, edit, delete boundaries)
+   - Address search with geocoding
 
+<<<<<<< HEAD
+2. **API Endpoints** (`/api/` prefix):
+   - `GET/POST/PUT/DELETE /api/features/` - Feature CRUD
+   - `GET/POST/PUT/DELETE /api/gardens/` - Garden management
+   - `GET/POST /api/plants/` - Basic plant endpoints
+
+3. **Database Models**:
+   - `Feature`: id, name, boundary (GeoJSON), color, garden_id
+   - Basic models for Garden, Plant, User, Zone (minimal implementation)
+
+### File Structure
+```
+backend/app/
+├── main.py              # FastAPI app
+├── database.py          # DB configuration  
+├── models/              # SQLAlchemy models
+└── routers/             # API endpoints
+
+frontend/src/
+├── components/garden/   # Mapbox components
+├── api/                 # API client functions
+└── stores/              # React state management
+=======
 ## Current Project Status (Updated September 2025)
 This is a web-based garden and yard planning application currently in active development. The project has a working FastAPI backend, React frontend with interactive grid system, and uses SQLite for development (with PostgreSQL planned for production).
 
@@ -115,445 +149,106 @@ class Plant(Base):
     species = Column(String)
     
 # Additional models exist but are not fully implemented yet
+>>>>>>> origin/main
+```
+````instructions
+# Garden Planner - Copilot Instructions
+
+## Project Overview
+Web-based garden planning application with FastAPI backend and React frontend featuring Mapbox mapping.
+
+## Environment & Setup
+- **OS**: Windows PowerShell (use `;` not `&&` to chain commands)
+- **Backend**: Python 3.12+ FastAPI on port 8000
+- **Frontend**: React+TypeScript+Vite on port 5173
+- **Database**: SQLite (development), PostgreSQL (optional)
+
+### Development Commands
+```powershell
+# Backend: cd backend; .\venv\Scripts\Activate.ps1; python -m uvicorn app.main:app --reload
+# Frontend: cd frontend; npm run dev
 ```
 
-## Current API Endpoints (Working)
+## Current Architecture
 
-### Garden Management
-```python
-# backend/app/routers/ - Current working endpoints with /api prefix
-GET /api/gardens/{garden_id}
-POST /api/gardens/
-PUT /api/gardens/{garden_id}
-DELETE /api/gardens/{garden_id}
+### Working Features
+1. **Mapbox Integration**: 
+  - Interactive map with USGS National Map imagery (free)
+  - Mapbox Draw tools for polygon creation
+  - Feature management (create, edit, delete boundaries)
+  - Address search with geocoding
 
-GET /api/plants/
-POST /api/plants/
+2. **API Endpoints** (`/api/` prefix):
+  - `GET/POST/PUT/DELETE /api/features/` - Feature CRUD
+  - `GET/POST/PUT/DELETE /api/gardens/` - Garden management
+  - `GET/POST /api/plants/` - Basic plant endpoints
 
-# All endpoints return mock data currently for frontend development
+3. **Database Models**:
+  - `Feature`: id, name, boundary (GeoJSON), color, garden_id
+  - Basic models for Garden, Plant, User, Zone (minimal implementation)
+
+### File Structure
+```
+backend/app/
+├── main.py              # FastAPI app
+├── database.py          # DB configuration  
+├── models/              # SQLAlchemy models
+└── routers/             # API endpoints
+
+frontend/src/
+├── components/garden/   # Mapbox components
+├── api/                 # API client functions
+└── stores/              # React state management
 ```
 
-## Current Frontend Components (Working Implementation)
+## Development Guidelines
 
-### Grid System Components
-```typescript
-// frontend/src/components/garden/InteractiveGrid.tsx
-interface InteractiveGridProps {
-  isGridVisible: boolean;
-  rows: number;
-  cols: number;
-}
+### Mapbox Development
+1. Always consult [Mapbox GL JS docs](https://docs.mapbox.com/mapbox-gl-js/api/) first
+2. Use official patterns over custom implementations
+3. Current implementation uses USGS imagery + Mapbox Draw tools only
 
-// Generates grid cells within boundary polygon
-// Uses dashed lines for visual clarity
-// Controlled by garden store state
+### API Patterns
+- Routes in `backend/app/routers/`
+- Business logic in `backend/app/services/`
+- Models in `backend/app/models/`
+- Frontend API clients in `frontend/src/api/`
 
-// frontend/src/components/garden/GridControls.tsx  
-// Provides intuitive UI controls:
-// - Toggle: "📐 Add Grid" / "🎯 Grid Active"
-// - "Insert Row/Column" and "Delete Row/Column" buttons
-// - Real-time grid dimensions display
+### Terminal Management
+- **Critical**: Always close existing terminals before starting new ones
+- Backend must use port 8000, frontend must use 5173
+- Use `taskkill /F /IM node.exe` if ports are stuck
+
+## Current Limitations
+- No user authentication (development mode)
+- No plant management beyond basic CRUD
+- No watering/weather features yet
+- Using SQLite by default (PostgreSQL optional)
+
+## Future Features (Not Implemented)
+- Advanced plant management
+- Weather integration  
+- Watering schedules
+- Spatial analysis with PostGIS
+- User authentication
+
+## PowerShell Environment Notes
+When providing terminal commands for this workspace:
+- Do NOT use `&&` to chain commands (not supported in PowerShell)
+- Use semicolon (`;`) to separate commands on a single line
+
+## VS Code Terminal Management
+VS Code has known issues with terminal automation in this workspace. When restarting servers:
+- Close existing terminals first
+- Wait a couple seconds for ports to free
+- Start backend (port 8000) then frontend (port 5173)
+
+## Server Restart Example
+```powershell
+# Backend: cd backend; .\venv\Scripts\Activate.ps1; python -m uvicorn app.main:app --reload
+# Frontend: cd frontend; npm run dev
 ```
 
-### State Management (Current Implementation)
-```typescript
-// frontend/src/stores/gardenStore.ts - Zustand store
-interface GardenState {
-  // Location and boundary
-  address: string | null;
-  center: [number, number] | null; 
-  boundary: number[][] | null;
-  
-  // Grid system
-  isGridVisible: boolean;
-  gridRows: number;
-  gridCols: number;
-  
-  // Actions
-  setAddress: (address: string, lat: number, lng: number) => void;
-  setBoundary: (boundary: number[][]) => void;
-  clearAllData: () => void; // Preserves address/center
-  setGridVisible: (visible: boolean) => void;
-  insertRow: () => void;
-  deleteRow: () => void;
-  insertColumn: () => void;
-  deleteColumn: () => void;
-}
-```
-
-## Current Development Patterns
-
-### File Organization (Current Structure)
-```
-backend/
-  ├── app/
-  │   ├── main.py              # FastAPI app with /api/* endpoints
-  │   ├── database.py          # SQLite configuration
-  │   ├── models/              # SQLAlchemy models
-  │   └── routers/             # API endpoints
-frontend/
-  ├── src/
-  │   ├── components/garden/   # Garden-specific React components
-  │   ├── stores/             # Zustand state management
-  │   ├── hooks/              # Custom React hooks
-  │   └── api/                # API client functions
-```
-
-### Current Workflow (What Actually Works)
-1. **Backend Start**: `cd backend && .\venv\Scripts\Activate.ps1 && python.exe -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload`
-2. **Frontend Start**: `cd frontend && npm run dev`
-3. **Access**: Frontend at http://localhost:5173, Backend at http://localhost:8000
-4. **Features**: Address search, boundary drawing, grid system with controls
-
-## Advanced Features (Planned/Future Implementation)
-
-### Spatial Analysis (PostGIS Integration Planned)
-from sqlalchemy import Column, Integer, String, Float, JSON, ForeignKey
-from sqlalchemy.orm import relationship
-from app.database import Base
-
-class Plant(Base):
-    __tablename__ = "plants"
-    
-    id = Column(Integer, primary_key=True)
-    garden_id = Column(Integer, ForeignKey('gardens.id'))
-    zone_id = Column(Integer, ForeignKey('zones.id'))
-    species_id = Column(Integer, ForeignKey('plant_species.id'))
-    location = Column(Geometry('POINT'))
-    planted_date = Column(Date)
-    
-    # Growth tracking
-    current_height = Column(Float)
-    current_spread = Column(Float)
-    health_status = Column(String)
-    
-    # Relationships
-    garden = relationship('Garden', back_populates='plants')
-    zone = relationship('Zone', back_populates='plants')
-    species = relationship('PlantSpecies')
-
-class PlantSpecies(Base):
-    __tablename__ = "plant_species"
-    
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
-    scientific_name = Column(String)
-    
-    # Growth requirements
-    sun_requirement = Column(String)  # full, partial, shade
-    water_requirement = Column(String)
-    min_temp = Column(Float)
-    max_temp = Column(Float)
-    
-    # Spacing requirements
-    mature_height = Column(Float)
-    mature_spread = Column(Float)
-    spacing = Column(Float)
-    
-    # Seasonal data
-    growing_seasons = Column(JSON)  # Contains climate zone specific data
-    days_to_harvest = Column(Integer)
-    harvest_window_days = Column(Integer)  # How many days to harvest once ready
-
-class WateringSchedule(Base):
-    __tablename__ = "watering_schedules"
-    
-    id = Column(Integer, primary_key=True)
-    zone_id = Column(Integer, ForeignKey('zones.id'))
-    irrigation_type = Column(String)  # drip, sprinkler, hose, etc
-    base_frequency_days = Column(Integer)  # Base watering frequency
-    water_amount_ml = Column(Float)  # Amount of water per session
-    start_time = Column(Time)  # Time to start watering
-    duration_minutes = Column(Integer)
-    rain_sensitivity_mm = Column(Float)  # mm of rain that counts as watering
-    
-    # Weather adjustments
-    skip_if_rain_forecast = Column(Boolean, default=True)
-    temperature_adjustment = Column(JSON)  # Adjust water amount based on temp
-    
-    zone = relationship('Zone', back_populates='watering_schedule')
-
-class WateringEvent(Base):
-    __tablename__ = "watering_events"
-    
-    id = Column(Integer, primary_key=True)
-    schedule_id = Column(Integer, ForeignKey('watering_schedules.id'))
-    planned_date = Column(DateTime)
-    actual_date = Column(DateTime, nullable=True)
-    status = Column(String)  # planned, completed, skipped
-    skip_reason = Column(String, nullable=True)  # rain, manual, etc
-    water_amount_ml = Column(Float)  # Actual amount used
-    
-    schedule = relationship('WateringSchedule')
-
-class WeatherData(Base):
-    __tablename__ = "weather_data"
-    
-    id = Column(Integer, primary_key=True)
-    garden_id = Column(Integer, ForeignKey('gardens.id'))
-    date = Column(Date)
-    rainfall_mm = Column(Float)
-    temperature_high_c = Column(Float)
-    temperature_low_c = Column(Float)
-    humidity = Column(Float)
-    wind_speed = Column(Float)
-    conditions = Column(String)
-    forecast_date = Column(DateTime)  # When this forecast was made
-    
-    garden = relationship('Garden')
-```
-
-## API Endpoints
-
-### Garden Management
-```python
-# backend/app/routers/gardens.py
-from fastapi import APIRouter, Depends, HTTPException
-from shapely.geometry import shape
-from geoalchemy2.shape import from_shape
-from app.services import garden_service, spatial_service
-
-router = APIRouter()
-
-@router.post("/gardens/")
-async def create_garden(
-    garden_data: GardenCreate,
-    current_user: User = Depends(get_current_user)
-):
-    # Convert GeoJSON to PostGIS geometry
-    boundary = shape(garden_data.boundary)
-    garden = Garden(
-        name=garden_data.name,
-        user_id=current_user.id,
-        boundary=from_shape(boundary, srid=4326)
-    )
-    
-    # Process satellite imagery for the garden area
-    imagery = await spatial_service.process_satellite_image(
-        boundary.bounds
-    )
-    
-    # Analyze terrain and environmental factors
-    analysis = spatial_service.analyze_terrain(imagery, boundary)
-    garden.elevation = analysis.elevation
-    garden.soil_type = analysis.soil_type
-    
-    return await garden_service.create_garden(garden)
-
-@router.get("/gardens/{garden_id}/sunlight")
-async def get_garden_sunlight(
-    garden_id: int,
-    date: datetime = Query(default=None)
-):
-    garden = await garden_service.get_garden(garden_id)
-    return await spatial_service.calculate_sunlight_exposure(garden, date)
-```
-
-### Planting and Zoning
-```python
-# backend/app/routers/planting.py
-@router.post("/gardens/{garden_id}/zones")
-async def create_planting_zone(
-    garden_id: int,
-    zone_data: ZoneCreate
-):
-    garden = await garden_service.get_garden(garden_id)
-    
-    # Validate zone placement
-    if not spatial_service.validate_zone_placement(garden, zone_data.boundary):
-        raise HTTPException(400, "Invalid zone placement")
-    
-    # Calculate environmental factors
-    sun_exposure = await spatial_service.calculate_zone_sunlight(
-        garden, zone_data.boundary
-    )
-    
-    zone = Zone(
-        garden_id=garden_id,
-        boundary=from_shape(shape(zone_data.boundary), srid=4326),
-        sun_exposure=sun_exposure
-    )
-    
-    return await garden_service.create_zone(zone)
-
-@router.post("/zones/{zone_id}/plants")
-async def add_plant(
-    zone_id: int,
-    plant_data: PlantCreate
-):
-    zone = await garden_service.get_zone(zone_id)
-    
-    # Validate plant spacing
-    if not spatial_service.validate_plant_spacing(
-        zone, plant_data.location, plant_data.species_id
-    ):
-        raise HTTPException(400, "Invalid plant spacing")
-    
-    # Check environmental compatibility
-    compatibility = await garden_service.check_plant_compatibility(
-        zone, plant_data.species_id
-    )
-    if not compatibility.suitable:
-        raise HTTPException(400, f"Unsuitable conditions: {compatibility.reasons}")
-    
-    return await garden_service.add_plant(plant_data)
-```
-
-### Watering Management
-```python
-# backend/app/routers/watering.py
-@router.post("/zones/{zone_id}/watering-schedule")
-async def create_watering_schedule(
-    zone_id: int,
-    schedule_data: WateringScheduleCreate
-):
-    zone = await garden_service.get_zone(zone_id)
-    
-    # Calculate optimal watering time based on plants
-    optimal_water = await garden_service.calculate_optimal_watering(
-        zone, schedule_data.irrigation_type
-    )
-    
-    schedule = WateringSchedule(
-        zone_id=zone_id,
-        irrigation_type=schedule_data.irrigation_type,
-        base_frequency_days=optimal_water.frequency,
-        water_amount_ml=optimal_water.amount,
-        start_time=schedule_data.start_time,
-        duration_minutes=optimal_water.duration
-    )
-    
-    return await garden_service.create_watering_schedule(schedule)
-
-@router.get("/schedules/{schedule_id}/next-events")
-async def get_watering_events(
-    schedule_id: int,
-    days: int = Query(default=7)
-):
-    schedule = await garden_service.get_watering_schedule(schedule_id)
-    weather = await weather_service.get_forecast(schedule.zone.garden)
-    
-    # Adjust schedule based on weather
-    events = await garden_service.generate_watering_events(
-        schedule, weather, days
-    )
-    
-    return events
-
-### Weather Integration
-```python
-# backend/app/routers/weather.py
-@router.get("/gardens/{garden_id}/weather")
-async def get_garden_weather(
-    garden_id: int,
-    days: int = Query(default=7)
-):
-    garden = await garden_service.get_garden(garden_id)
-    
-    # Get current conditions and forecast
-    weather_data = await weather_service.get_garden_weather(
-        garden.boundary.centroid,
-        days=days
-    )
-    
-    # Calculate impact on watering schedules
-    watering_adjustments = await garden_service.calculate_weather_impacts(
-        garden, weather_data
-    )
-    
-    return {
-        "current": weather_data.current,
-        "forecast": weather_data.forecast,
-        "watering_adjustments": watering_adjustments
-    }
-
-### Harvest Planning
-```python
-# backend/app/routers/harvesting.py
-@router.get("/gardens/{garden_id}/harvest-schedule")
-async def get_harvest_schedule(
-    garden_id: int,
-    start_date: date = Query(default=None),
-    end_date: date = Query(default=None)
-):
-    garden = await garden_service.get_garden(garden_id)
-    plants = await garden_service.get_garden_plants(garden_id)
-    
-    # Calculate expected harvest dates
-    harvest_windows = []
-    for plant in plants:
-        if plant.planted_date:
-            est_harvest_date = plant.planted_date + \
-                             timedelta(days=plant.species.days_to_harvest)
-            harvest_windows.append({
-                "plant_id": plant.id,
-                "plant_name": plant.species.name,
-                "estimated_date": est_harvest_date,
-                "harvest_window_start": est_harvest_date,
-                "harvest_window_end": est_harvest_date + \
-                    timedelta(days=plant.species.harvest_window_days),
-                "location": plant.location
-            })
-    
-    return sorted(harvest_windows, key=lambda x: x["estimated_date"])
-```
-
-## Frontend Components
-
-### Garden Map Component
-```typescript
-// frontend/src/components/GardenMap.tsx
-import React, { useEffect, useRef } from 'react';
-import mapboxgl from 'mapbox-gl';
-import { useGardenStore } from '../stores/gardenStore';
-
-interface GardenMapProps {
-  garden: Garden;
-  onZoneSelect: (zone: Zone) => void;
-}
-
-export const GardenMap: React.FC<GardenMapProps> = ({ garden, onZoneSelect }) => {
-  const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<mapboxgl.Map | null>(null);
-  
-  useEffect(() => {
-    if (!map.current && mapContainer.current) {
-      map.current = new mapboxgl.Map({
-        container: mapContainer.current,
-        style: 'mapbox://styles/mapbox/satellite-v9',
-        center: garden.center,
-        zoom: 18
-      });
-      
-      // Add garden boundary
-      map.current.addLayer({
-        id: 'garden-boundary',
-        type: 'fill',
-        source: {
-          type: 'geojson',
-          data: garden.boundary
-        },
-        paint: {
-          'fill-color': '#088',
-          'fill-opacity': 0.3
-        }
-      });
-      
-      // Add planting zones
-      garden.zones.forEach(zone => {
-        map.current?.addLayer({
-          id: `zone-${zone.id}`,
-          type: 'fill',
-          source: {
-            type: 'geojson',
-            data: zone.boundary
-          },
-          paint: {
-            'fill-color': zone.sunExposure > 6 ? '#fb4' : '#48b',
-            'fill-opacity': 0.5
-          }
-        });
-      });
     }
   }, [garden]);
   
@@ -1195,145 +890,25 @@ Each of these features uses spatial analysis capabilities to provide intelligent
 ### API Structure
 Backend APIs should follow this structure:
 - Route definitions in `backend/app/routers/`
+>>>>>>> origin/main
 - Business logic in `backend/app/services/`
-- Data models in `backend/app/models/`
+- Models in `backend/app/models/`
+- Frontend API clients in `frontend/src/api/`
 
-### Cross-Service Communication
-- Frontend communicates with backend via REST API
-- CORS is configured to allow requests from frontend (port 3000)
-- Environment variables handle service URLs:
-  - Backend: `DATABASE_URL=postgresql://postgres:postgres@db:5432/garden_planner`
-  - Frontend: `REACT_APP_API_URL=http://localhost:8000`
+### Terminal Management
+- **Critical**: Always close existing terminals before starting new servers
+- Backend must use port 8000, frontend must use 5173
+- Use `taskkill /F /IM node.exe` if ports are stuck
 
-### Dependencies
-Key backend libraries:
-- FastAPI for API framework (industry standard for modern Python APIs)
-- SQLAlchemy for database ORM (industry standard)
-- GeoPandas for geographical data processing (built on Shapely/Pandas)
-- PostGIS extension for PostgreSQL (for spatial database features)
-- Pillow/NumPy for image processing (industry standards)
+## Current Limitations
+- No user authentication (development mode)
+- No plant management beyond basic CRUD
+- No watering/weather features yet
+- Using SQLite by default (PostgreSQL optional)
 
-Additional considerations:
-- GeoPandas provides integrated support for:
-  - Reading/writing spatial data formats
-  - Spatial operations and analysis
-  - Integration with PostGIS
-  - Visualization capabilities
-
-## Integration Points
-1. **Satellite Imagery**: (Planned) Integration for retrieving yard layouts
-2. **Database**: PostgreSQL for persistent storage
-3. **Frontend-Backend**: REST API communication over HTTP
-
-## File Organization
-```
-backend/
-  ├── app/              # Main application code
-  │   ├── main.py      # FastAPI application entry
-  │   ├── models/      # Database models
-  │   ├── routers/     # API routes
-  │   └── services/    # Business logic
-frontend/              # React application (planned)
-data/                  # Persistent data storage
-```
-
-## Common Tasks
-1. Adding new API endpoints:
-   - Create route in `backend/app/routers/`
-   - Implement service logic in `backend/app/services/`
-   - Update API documentation using FastAPI decorators
-
-2. Database changes:
-   - Update models in `backend/app/models/`
-   - Apply changes through SQLAlchemy
-
-## Data Sources and External APIs
-
-### Weather Data
-- **OpenWeatherMap API**: Primary source for weather forecasts and historical data
-  - Endpoint: `api.openweathermap.org/data/2.5/forecast`
-  - Features: 5-day forecast, historical data, precipitation probability
-  - Example integration in `weather_service.py`
-
-### Plant Database Sources
-1. **USDA Plants Database**
-   - API: https://plants.sc.egov.usda.gov/api/
-   - Comprehensive plant characteristics
-   - Growing requirements
-   - Native ranges
-
-2. **Trefle.io**
-   - Modern REST API for plants
-   - Over 1M plants in database
-   - Growth, edibility, and distribution data
-   - Example endpoint: `https://trefle.io/api/v1/plants`
-
-### Plant Images
-1. **Free Sources**:
-   - Wikimedia Commons API
-   - USDA PLANTS Database images
-   - Unsplash API (botanical photography)
-   - Example integration in `plant_image_service.py`
-
-2. **Creative Commons Sources**:
-   - iNaturalist API (community plant photos)
-   - Flickr Creative Commons API
-   - PlantNet API (includes image recognition)
-
-### Growing Zone Data
-- **USDA Plant Hardiness Zone API**
-  - ZIP code to zone mapping
-  - Temperature ranges
-  - Growing season length
-
-### Example Data Integration
-```python
-# backend/app/services/data_integration.py
-from typing import Dict, List
-import aiohttp
-import asyncio
-
-async def fetch_plant_data(scientific_name: str) -> Dict:
-    """Fetch plant data from multiple sources and merge"""
-    async with aiohttp.ClientSession() as session:
-        # Fetch from USDA
-        usda_data = await fetch_usda_data(session, scientific_name)
-        
-        # Fetch from Trefle
-        trefle_data = await fetch_trefle_data(session, scientific_name)
-        
-        # Merge data preferring USDA for scientific info
-        # and Trefle for growing conditions
-        return merge_plant_data(usda_data, trefle_data)
-
-async def fetch_plant_images(plant_name: str, limit: int = 5) -> List[str]:
-    """Fetch plant images from multiple free sources"""
-    async with aiohttp.ClientSession() as session:
-        tasks = [
-            fetch_wikimedia_images(session, plant_name),
-            fetch_unsplash_images(session, plant_name),
-            fetch_inaturalist_images(session, plant_name)
-        ]
-        
-        results = await asyncio.gather(*tasks)
-        return filter_and_deduplicate_images(results, limit)
-```
-
-## Environment Variables
-```env
-# .env example
-# Weather API
-OPENWEATHER_API_KEY=your_key_here
-WEATHER_UPDATE_INTERVAL=3600
-
-# Plant Data APIs
-TREFLE_API_KEY=your_key_here
-USDA_API_KEY=your_key_here
-
-# Image APIs
-UNSPLASH_ACCESS_KEY=your_key_here
-FLICKR_API_KEY=your_key_here
-
-# Database
-DATABASE_URL=postgresql://postgres:postgres@db:5432/garden_planner
-```
+## Future Features (Not Implemented)
+- Advanced plant management
+- Weather integration  
+- Watering schedules
+- Spatial analysis with PostGIS
+- User authentication
